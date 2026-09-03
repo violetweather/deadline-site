@@ -8,7 +8,7 @@ oracles: no judge model, no self-reported scores. Brutal tasks award partial
 credit per test group; official runs also report a strict all-attempts-must-pass
 score.
 
-**Leaderboard:** https://violetweather.github.io/deadline-site/
+**Leaderboard:** https://deadline.nnx.fyi/
 
 ## Why the tests are private
 
