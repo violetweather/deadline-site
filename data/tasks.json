@@ -1,416 +1,218 @@
 {
-  "01_zapzip": {
-    "difficulty": "easy",
-    "points": 6,
-    "category": "write",
-    "tags": [
-      "spec"
-    ]
-  },
-  "02_balanced_brackets": {
-    "difficulty": "easy",
-    "points": 6,
-    "category": "write",
-    "tags": [
-      "algorithms"
-    ]
-  },
-  "03_rle_encode": {
-    "difficulty": "easy",
-    "points": 6,
-    "category": "write",
-    "tags": [
-      "algorithms"
-    ]
-  },
-  "04_merge_intervals": {
+  "01_cipher_d2": {
     "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "algorithms"
-    ]
-  },
-  "05_top_words": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "algorithms",
-      "spec"
-    ]
-  },
-  "06_caesar_decode": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "algorithms"
-    ]
-  },
-  "07_fix_binary_search": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "bugfix",
-    "tags": [
-      "bugfix",
-      "algorithms"
-    ]
-  },
-  "08_fix_default_list": {
-    "difficulty": "easy",
-    "points": 6,
-    "category": "bugfix",
-    "tags": [
-      "bugfix"
-    ]
-  },
-  "09_fix_average": {
-    "difficulty": "easy",
-    "points": 6,
-    "category": "bugfix",
-    "tags": [
-      "bugfix",
-      "numerics"
-    ]
-  },
-  "10_table_format": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "write",
-    "tags": [
-      "spec"
-    ]
-  },
-  "11_weighted_meetings": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "write",
-    "tags": [
-      "algorithms"
-    ]
-  },
-  "12_course_order": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "algorithms"
-    ]
-  },
-  "13_json_pointer": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "parsing",
-      "spec"
-    ]
-  },
-  "14_lru_cache": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "state"
-    ]
-  },
-  "15_expr_eval": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "write",
-    "tags": [
-      "parsing"
-    ]
-  },
-  "16_glob_match": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "write",
-    "tags": [
-      "parsing",
-      "algorithms"
-    ]
-  },
-  "17_csv_parse": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "write",
-    "tags": [
-      "parsing"
-    ]
-  },
-  "18_semver_cmp": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "spec"
-    ]
-  },
-  "19_fix_merge_config": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "bugfix",
-    "tags": [
-      "bugfix",
-      "state"
-    ]
-  },
-  "20_fix_chunks": {
-    "difficulty": "easy",
-    "points": 6,
-    "category": "bugfix",
-    "tags": [
-      "bugfix"
-    ]
-  },
-  "21_fix_flatten_cycle": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "bugfix",
-    "tags": [
-      "bugfix",
-      "state"
-    ]
-  },
-  "22_fix_truncate_utf8": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "bugfix",
-    "tags": [
-      "bugfix",
-      "spec"
-    ]
-  },
-  "23_fix_store": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "bugfix",
-    "tags": [
-      "multifile",
-      "bugfix"
-    ]
-  },
-  "24_report_module": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "write",
-    "tags": [
-      "multifile",
-      "integration"
-    ]
-  },
-  "25_turnstile": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "state",
-      "spec"
-    ]
-  },
-  "26_rate_limiter": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "state",
-      "algorithms"
-    ]
-  },
-  "27_flatten_paths": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "algorithms",
-      "spec"
-    ]
-  },
-  "28_room_conflicts": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "algorithms"
-    ]
-  },
-  "29_infer_rule": {
-    "difficulty": "brutal",
-    "points": 30,
+    "points": 10,
+    "budget": 2500,
     "category": "write",
     "tags": [
       "inference"
     ]
   },
-  "30_close_pairs": {
+  "02_cipher_d4": {
+    "difficulty": "hard",
+    "points": 20,
+    "budget": 5000,
+    "category": "write",
+    "tags": [
+      "inference"
+    ]
+  },
+  "03_cipher_d6": {
     "difficulty": "brutal",
+    "points": 35,
+    "budget": 10000,
+    "category": "write",
+    "tags": [
+      "inference"
+    ]
+  },
+  "04_cipher_d8": {
+    "difficulty": "nightmare",
+    "points": 70,
+    "budget": 20000,
+    "category": "write",
+    "tags": [
+      "inference"
+    ]
+  },
+  "05_cipher_d10": {
+    "difficulty": "nightmare",
+    "points": 120,
+    "budget": 20000,
+    "category": "write",
+    "tags": [
+      "inference"
+    ]
+  },
+  "06_machine_a": {
+    "difficulty": "medium",
+    "points": 15,
+    "budget": 2500,
+    "category": "write",
+    "tags": [
+      "state",
+      "spec"
+    ]
+  },
+  "07_machine_traces": {
+    "difficulty": "hard",
     "points": 30,
+    "budget": 5000,
+    "category": "write",
+    "tags": [
+      "inference",
+      "state"
+    ]
+  },
+  "08_codec_a": {
+    "difficulty": "medium",
+    "points": 15,
+    "budget": 2500,
+    "category": "write",
+    "tags": [
+      "parsing",
+      "numerics"
+    ]
+  },
+  "09_codec_traces": {
+    "difficulty": "brutal",
+    "points": 40,
+    "budget": 10000,
+    "category": "write",
+    "tags": [
+      "inference",
+      "parsing"
+    ]
+  },
+  "10_strange_calendar": {
+    "difficulty": "hard",
+    "points": 20,
+    "budget": 5000,
+    "category": "write",
+    "tags": [
+      "numerics",
+      "algorithms"
+    ]
+  },
+  "11_eval_a": {
+    "difficulty": "hard",
+    "points": 20,
+    "budget": 5000,
+    "category": "write",
+    "tags": [
+      "parsing",
+      "spec"
+    ]
+  },
+  "12_eval_traces": {
+    "difficulty": "brutal",
+    "points": 40,
+    "budget": 10000,
+    "category": "write",
+    "tags": [
+      "inference",
+      "parsing"
+    ]
+  },
+  "13_pairs_a": {
+    "difficulty": "brutal",
+    "points": 25,
+    "budget": 10000,
     "category": "write",
     "tags": [
       "performance",
       "algorithms"
     ]
   },
-  "31_exact_ledger": {
-    "difficulty": "brutal",
-    "points": 30,
-    "category": "write",
-    "tags": [
-      "numerics",
-      "spec"
-    ]
-  },
-  "32_ordinal_calendar": {
-    "difficulty": "brutal",
-    "points": 30,
-    "category": "write",
-    "tags": [
-      "numerics",
-      "algorithms"
-    ]
-  },
-  "33_tiny_regex": {
-    "difficulty": "brutal",
-    "points": 30,
-    "category": "write",
-    "tags": [
-      "parsing",
-      "algorithms"
-    ]
-  },
-  "34_elevator_sim": {
-    "difficulty": "brutal",
-    "points": 30,
-    "category": "write",
-    "tags": [
-      "state",
-      "spec"
-    ]
-  },
-  "35_fix_scheduler": {
-    "difficulty": "brutal",
-    "points": 30,
-    "category": "bugfix",
-    "tags": [
-      "multifile",
-      "bugfix"
-    ]
-  },
-  "36_log_sessions": {
-    "difficulty": "brutal",
-    "points": 30,
-    "category": "write",
-    "tags": [
-      "parsing",
-      "spec"
-    ]
-  },
-  "37_tinydb": {
+  "14_pairs_traces": {
     "difficulty": "brutal",
     "points": 40,
+    "budget": 10000,
     "category": "write",
     "tags": [
-      "state",
-      "parsing"
+      "inference",
+      "performance"
     ]
   },
-  "38_refactor_contract": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "refactor",
-      "spec"
-    ]
-  },
-  "39_legacy_cleanup": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "bugfix",
-    "tags": [
-      "legacy",
-      "parsing"
-    ]
-  },
-  "40_json_merge": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "integration",
-      "spec"
-    ]
-  },
-  "41_text_wrap": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "write",
-    "tags": [
-      "spec"
-    ]
-  },
-  "42_binary_codec": {
-    "difficulty": "hard",
-    "points": 18,
+  "15_midnight_machine": {
+    "difficulty": "nightmare",
+    "points": 100,
+    "budget": 20000,
     "category": "write",
     "tags": [
       "parsing",
-      "numerics"
-    ]
-  },
-  "43_diff_apply": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "write",
-    "tags": [
-      "state",
-      "spec"
-    ]
-  },
-  "44_query_engine": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "write",
-    "tags": [
-      "spec",
-      "algorithms"
-    ]
-  },
-  "45_markdown_lite": {
-    "difficulty": "hard",
-    "points": 18,
-    "category": "write",
-    "tags": [
-      "parsing",
-      "spec"
-    ]
-  },
-  "46_service_feature": {
-    "difficulty": "brutal",
-    "points": 30,
-    "category": "write",
-    "tags": [
-      "multifile",
-      "integration"
-    ]
-  },
-  "47_fix_pager": {
-    "difficulty": "medium",
-    "points": 13,
-    "category": "bugfix",
-    "tags": [
-      "bugfix",
       "state"
     ]
   },
-  "48_slugify_gauntlet": {
-    "difficulty": "medium",
-    "points": 13,
+  "16_calendar_traces": {
+    "difficulty": "brutal",
+    "points": 45,
+    "budget": 10000,
     "category": "write",
     "tags": [
+      "inference",
+      "numerics"
+    ]
+  },
+  "17_machine_traces_xl": {
+    "difficulty": "nightmare",
+    "points": 70,
+    "budget": 20000,
+    "category": "write",
+    "tags": [
+      "inference",
+      "state"
+    ]
+  },
+  "18_codec_traces_xl": {
+    "difficulty": "nightmare",
+    "points": 70,
+    "budget": 20000,
+    "category": "write",
+    "tags": [
+      "inference",
+      "parsing"
+    ]
+  },
+  "19_redacted_machine": {
+    "difficulty": "nightmare",
+    "points": 90,
+    "budget": 20000,
+    "category": "write",
+    "tags": [
+      "inference",
+      "parsing",
+      "state"
+    ]
+  },
+  "20_sql_report": {
+    "difficulty": "hard",
+    "points": 20,
+    "budget": 5000,
+    "category": "write",
+    "tags": [
+      "sql",
       "spec"
+    ]
+  },
+  "21_sql_traces": {
+    "difficulty": "brutal",
+    "points": 45,
+    "budget": 10000,
+    "category": "write",
+    "tags": [
+      "sql",
+      "inference"
+    ]
+  },
+  "22_sql_traces_xl": {
+    "difficulty": "nightmare",
+    "points": 65,
+    "budget": 20000,
+    "category": "write",
+    "tags": [
+      "sql",
+      "inference"
     ]
   }
 }

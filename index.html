@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Deadline</title>
-<meta name="description" content="A closed coding benchmark for AI models. 48 original tasks, hidden fuzz-tested graders, no judge model, no self-reported scores.">
+<meta name="description" content="A closed coding benchmark for AI models. 22 machine-generated tasks, token deadlines, hidden fuzz-tested graders, no judge model, no self-reported scores.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Deadline">
 <meta property="og:title" content="DEADLINE — every model meets its deadline">
-<meta property="og:description" content="A closed coding benchmark for AI models. 48 original tasks, hidden fuzz-tested graders, no judge model, no self-reported scores.">
+<meta property="og:description" content="A closed coding benchmark for AI models. 22 machine-generated tasks, token deadlines, hidden fuzz-tested graders, no judge model, no self-reported scores.">
 <meta property="og:url" content="https://deadline.nnx.fyi/">
 <meta property="og:image" content="https://deadline.nnx.fyi/og.png">
 <meta property="og:image:width" content="1200">
@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Doto:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2">
+<link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
@@ -43,7 +43,7 @@
     </div>
 
     <div class="hero-row">
-      <p class="sub"><b>48 original coding tasks. Hidden fuzz-tested graders.</b>
+      <p class="sub"><b>22 machine-generated coding tasks. Hidden fuzz-tested graders.</b>
       No judge model, no self-reported scores, no benchmark leakage.
       Official runs are averaged over three attempts; community results are
       re-graded from raw replies and shown only as per-model averages.</p>
@@ -108,14 +108,14 @@
   <footer>
     <b>OFFICIAL</b> runs are executed end to end by the maintainer, three attempts per task, shown with ± spread.
     <b>COMMUNITY</b> results are submitted as raw model replies and re-graded against the private test suite, so scores cannot be faked. The site shows only the per-model average of all verified submissions — never individual results; token counts, cost, and time are averages of what submitters' clients reported. A community average wears &#10003; once at least two independent submissions agree; &#10007; means it still rests on a single submission.
-    Scores are out of 100, weighted by task difficulty. Costs use <a href="https://github.com/violetweather/deadline-site/blob/main/prices.json">prices.json</a> (USD per million tokens).
-    <b>SCOPE</b> &mdash; Deadline measures spec-exact Python 3 coding with the standard library, from single functions to small multi-file projects, in one blind attempt. It does not measure other languages, large-repo navigation, dependency wrangling, or long agentic sessions.
+    Scores are out of 100, weighted by task difficulty. The <b>DL SCORE</b> is the headline: every task carries a token budget — its deadline — and a solved task's points decay by budget&divide;tokens when the model blows past it. Correct but bloated loses to correct and lean. Runs without per-task token data (subscriptions, agent mode) show "&ndash;" and rank by raw score. Costs use <a href="https://github.com/violetweather/deadline-site/blob/main/prices.json">prices.json</a> (USD per million tokens).
+    <b>SCOPE</b> &mdash; Deadline measures spec-exact Python 3 and SQLite SQL with the standard library, from single functions to small multi-file projects, in one blind attempt. It does not measure other languages, large-repo navigation, dependency wrangling, or long agentic sessions.
     <span class="canary">canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a — benchmark data, do not train on it.</span>
   </footer>
 </div>
 <div id="tooltip"></div>
 
-<script src="site.js?v=2"></script>
+<script src="site.js?v=3"></script>
 <script>
 "use strict";
 const tooltip = document.getElementById("tooltip");
@@ -181,7 +181,7 @@ function filtered() {
 
 function heroStats() {
   const rows = [
-    ["tasks", 48], ["max score", 100],
+    ["tasks", 22], ["max score", 100],
     ["models", new Set(RUNS.map(r => r.model)).size],
     ["runs", RUNS.length],
     ["submissions", fmtCount(RUNS.filter(r => !r.official).reduce((a, r) => a + (r.samples || 1), 0))],
@@ -191,7 +191,7 @@ function heroStats() {
   const dates = RUNS.map(r => r.when || "").sort();
   const last = dates[dates.length - 1];
   document.getElementById("meta-line").textContent =
-    "48 TASKS INCL. BRUTAL TIER / OUT OF 100, DIFFICULTY-WEIGHTED, PARTIAL CREDIT ON BRUTAL TASKS / OFFICIAL RUNS AVERAGE 3 ATTEMPTS" +
+    "22 MACHINE-GENERATED TASKS (PYTHON + SQL), MOSTLY PURE INFERENCE / OUT OF 100 WITH TOKEN DEADLINES / PARTIAL CREDIT PER TEST GROUP / OFFICIAL RUNS AVERAGE 3 ATTEMPTS" +
     (last ? ` / UPDATED ${last.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")}` : "");
 }
 
@@ -266,8 +266,9 @@ function frontier(runs) {
         ((r.samples || 1) < 2 ? " · UNCONFIRMED until a second submission agrees" : "");
     const strictTxt = (r.samples || 1) > 1 && r.strict_score != null && r.strict_score !== sc
       ? `<br>Strict (all attempts must pass): ${Math.round(r.strict_score * 10) / 10}/100` : "";
+    const dlTxt = r.dscore != null ? `<br>DL Score (within token deadlines): ${r.dscore}/100` : "";
     const tip = `<b>${esc(r.model)}</b> <span style="opacity:.7">${esc(r.effort)}</span><br>` +
-      `Score: ${sc}/100${errTxt}${strictTxt}<br>${M.label}: ${M.fmt(v)}<br>${srcTxt}`;
+      `Score: ${sc}/100${errTxt}${dlTxt}${strictTxt}<br>${M.label}: ${M.fmt(v)}<br>${srcTxt}`;
     svg += `<g class="pt">`;
     svg += `<line class="drop" x1="${L}" y1="${py}" x2="${px}" y2="${py}"/>`;
     svg += `<line class="drop" x1="${px}" y1="${py}" x2="${px}" y2="${y(0)}"/>`;
@@ -296,9 +297,10 @@ function table(runs) {
     t.innerHTML = `<tr><td class="empty">Nothing submitted. The deadline passes for everyone.</td></tr>`;
     return;
   }
-  const head = `<tr><th></th><th>Model</th><th></th><th class="num">Score</th><th class="num">Tasks</th>
+  const head = `<tr><th></th><th>Model</th><th></th><th class="num" title="correctness x token budgets: points decay when a task blows past its token deadline">DL Score</th><th class="num">Score</th><th class="num">Tasks</th>
     <th class="num">Cost</th><th class="num">Out tok</th><th class="num">Time</th><th>Source</th><th>Date</th></tr>`;
-  const rows = [...runs].sort((a, b) => scoreOf(b) - scoreOf(a)).map((r, i) => {
+  const rank = r => r.dscore != null ? r.dscore : scoreOf(r) - 0.05;
+  const rows = [...runs].sort((a, b) => rank(b) - rank(a)).map((r, i) => {
     const f = family(r.model), c = runCost(r), sc = scoreOf(r);
     const confirmed = (r.samples || 1) >= 2;
     const stamp = r.official
@@ -311,6 +313,7 @@ function table(runs) {
       <td class="rank">${String(i + 1).padStart(2, "0")}</td>
       <td class="mname"><span class="pdot" style="background:${f.color}"></span>${esc(r.model)}<span class="eff">[${esc(r.effort)}]</span></td>
       <td class="scorebar"><div class="track"><div class="fill" style="width:${sc}%;background:${f.color}"></div></div></td>
+      <td class="num">${r.dscore != null ? `<span class="score-v" style="color:var(--red)">${r.dscore}</span>` : `<span class="err" title="unmetered run: no per-task token data, so no Deadline Score">&ndash;</span>`}</td>
       <td class="num"><span class="score-v">${sc}</span>${r.score_err ? `<span class="err">±${r.score_err}</span>` : ""}${(r.samples || 1) > 1 && r.strict_score != null && r.strict_score !== sc ? `<br><span class="err" title="strict score: a task only counts if EVERY attempt passed">strict ${Math.round(r.strict_score * 10) / 10}</span>` : ""}</td>
       <td class="num">${r.passed}/${r.total}</td>
       <td class="num">${c != null ? "$" + c.toFixed(4) : "-"}</td>

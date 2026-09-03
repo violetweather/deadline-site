@@ -8,8 +8,8 @@ const SUBMIT_ISSUE_URL = REPO_URL + "/issues/new?template=submission.yml";
 (function () {
   const track = document.getElementById("ticker-track");
   if (!track) return;
-  const phrases = ["Every model meets its deadline", "48 tasks", "The brutal tier awaits",
-    "No judge model", "Hidden tests", "Scores out of 100", "Submit before midnight", "Pass or fail"];
+  const phrases = ["Every model meets its deadline", "22 machine-generated tasks", "Every task has a token deadline",
+    "No judge model", "Hidden tests", "Scores out of 100", "Submit before midnight", "Python and SQL"];
   const half = phrases.map(p => `<span>${p}</span>`).join("");
   track.innerHTML = half + half;
 })();
@@ -51,8 +51,9 @@ const SUBMIT_ISSUE_URL = REPO_URL + "/issues/new?template=submission.yml";
       if (clock) {
         clock.textContent =
           `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-        // near midnight the marker clock would crash into the LEFT counter
-        clock.style.visibility = pctNum > 86 ? "hidden" : "visible";
+        // near either end of the strip the marker clock crashes into the
+        // head labels (title on the left, LEFT counter on the right)
+        clock.style.visibility = (pctNum > 86 || pctNum < 16) ? "hidden" : "visible";
       }
       const flag = document.querySelector(".dl-flag");
       if (flag) flag.style.opacity = pctNum > 78 ? "0" : "1";

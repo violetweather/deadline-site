@@ -2,13 +2,16 @@
 
 *Every model meets its Deadline.*
 
-A closed coding benchmark for AI models. 48 original Python tasks — including
-a brutal tier built to break frontier models — graded by hidden, fuzz-tested
-oracles: no judge model, no self-reported scores. Brutal tasks award partial
-credit per test group; official runs also report a strict all-attempts-must-pass
-score.
+A closed coding benchmark for AI models. 22 MACHINE-GENERATED Python and SQL tasks (nearly half pure inference from observed behavior) —
+hidden cipher pipelines, randomized state machines and formats, scrambled
+precedence tables, performance gates, and a generated-semantics interpreter —
+graded by hidden, fuzz-tested oracles with partial credit per test group.
+No judge model, no self-reported scores. Every task carries a TOKEN BUDGET
+(its deadline); the headline DL Score is correctness times timeliness, so
+correct-but-bloated loses to correct-and-lean. Official runs also report a
+strict all-attempts-must-pass score.
 
-**Scope, honestly:** Deadline measures spec-exact Python 3 coding with the
+**Scope, honestly:** Deadline measures spec-exact Python 3 and SQLite SQL with the
 standard library, from single functions to small multi-file projects, in one
 blind attempt. It does not measure other languages, large-repo navigation,
 dependency wrangling, or long agentic sessions. Skill areas (algorithms,
@@ -49,8 +52,10 @@ no hand-editing replies. Obviously hand-written "replies" get rejected.
 
 ## Scores explained
 
-Scores are out of **100**, weighted by task difficulty (easy 6, medium 13,
-hard 18, brutal 30 points, normalized to 100). A perfect run scores 100.
+Scores are out of **100**, weighted by task difficulty and depth. The
+**DL Score** additionally applies each task's token budget: points decay by
+budget÷tokens past the deadline. Runs without per-task token data
+(subscriptions, agent mode) get a raw score only.
 
 - **Official**: runs executed end to end by the maintainer, averaged over
   3 attempts per task and shown with an error bar (±).
