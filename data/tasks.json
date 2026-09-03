@@ -2,7 +2,7 @@
   "01_cipher_d2": {
     "difficulty": "medium",
     "points": 10,
-    "budget": 2500,
+    "budget": 1250,
     "category": "write",
     "tags": [
       "inference"
@@ -11,7 +11,7 @@
   "02_cipher_d4": {
     "difficulty": "hard",
     "points": 20,
-    "budget": 5000,
+    "budget": 2500,
     "category": "write",
     "tags": [
       "inference"
@@ -20,7 +20,7 @@
   "03_cipher_d6": {
     "difficulty": "brutal",
     "points": 35,
-    "budget": 10000,
+    "budget": 5000,
     "category": "write",
     "tags": [
       "inference"
@@ -29,7 +29,7 @@
   "04_cipher_d8": {
     "difficulty": "nightmare",
     "points": 70,
-    "budget": 20000,
+    "budget": 10000,
     "category": "write",
     "tags": [
       "inference"
@@ -38,7 +38,7 @@
   "05_cipher_d10": {
     "difficulty": "nightmare",
     "points": 120,
-    "budget": 20000,
+    "budget": 10000,
     "category": "write",
     "tags": [
       "inference"
@@ -47,7 +47,7 @@
   "06_machine_a": {
     "difficulty": "medium",
     "points": 15,
-    "budget": 2500,
+    "budget": 1250,
     "category": "write",
     "tags": [
       "state",
@@ -57,7 +57,7 @@
   "07_machine_traces": {
     "difficulty": "hard",
     "points": 30,
-    "budget": 5000,
+    "budget": 2500,
     "category": "write",
     "tags": [
       "inference",
@@ -67,7 +67,7 @@
   "08_codec_a": {
     "difficulty": "medium",
     "points": 15,
-    "budget": 2500,
+    "budget": 1250,
     "category": "write",
     "tags": [
       "parsing",
@@ -77,7 +77,7 @@
   "09_codec_traces": {
     "difficulty": "brutal",
     "points": 40,
-    "budget": 10000,
+    "budget": 5000,
     "category": "write",
     "tags": [
       "inference",
@@ -87,7 +87,7 @@
   "10_strange_calendar": {
     "difficulty": "hard",
     "points": 20,
-    "budget": 5000,
+    "budget": 2500,
     "category": "write",
     "tags": [
       "numerics",
@@ -97,7 +97,7 @@
   "11_eval_a": {
     "difficulty": "hard",
     "points": 20,
-    "budget": 5000,
+    "budget": 2500,
     "category": "write",
     "tags": [
       "parsing",
@@ -107,7 +107,7 @@
   "12_eval_traces": {
     "difficulty": "brutal",
     "points": 40,
-    "budget": 10000,
+    "budget": 5000,
     "category": "write",
     "tags": [
       "inference",
@@ -117,7 +117,7 @@
   "13_pairs_a": {
     "difficulty": "brutal",
     "points": 25,
-    "budget": 10000,
+    "budget": 5000,
     "category": "write",
     "tags": [
       "performance",
@@ -127,7 +127,7 @@
   "14_pairs_traces": {
     "difficulty": "brutal",
     "points": 40,
-    "budget": 10000,
+    "budget": 5000,
     "category": "write",
     "tags": [
       "inference",
@@ -137,7 +137,7 @@
   "15_midnight_machine": {
     "difficulty": "nightmare",
     "points": 100,
-    "budget": 20000,
+    "budget": 10000,
     "category": "write",
     "tags": [
       "parsing",
@@ -147,7 +147,7 @@
   "16_calendar_traces": {
     "difficulty": "brutal",
     "points": 45,
-    "budget": 10000,
+    "budget": 5000,
     "category": "write",
     "tags": [
       "inference",
@@ -157,7 +157,7 @@
   "17_machine_traces_xl": {
     "difficulty": "nightmare",
     "points": 70,
-    "budget": 20000,
+    "budget": 10000,
     "category": "write",
     "tags": [
       "inference",
@@ -167,7 +167,7 @@
   "18_codec_traces_xl": {
     "difficulty": "nightmare",
     "points": 70,
-    "budget": 20000,
+    "budget": 10000,
     "category": "write",
     "tags": [
       "inference",
@@ -177,7 +177,7 @@
   "19_redacted_machine": {
     "difficulty": "nightmare",
     "points": 90,
-    "budget": 20000,
+    "budget": 10000,
     "category": "write",
     "tags": [
       "inference",
@@ -188,7 +188,7 @@
   "20_sql_report": {
     "difficulty": "hard",
     "points": 20,
-    "budget": 5000,
+    "budget": 2500,
     "category": "write",
     "tags": [
       "sql",
@@ -198,7 +198,7 @@
   "21_sql_traces": {
     "difficulty": "brutal",
     "points": 45,
-    "budget": 10000,
+    "budget": 5000,
     "category": "write",
     "tags": [
       "sql",
@@ -208,11 +208,65 @@
   "22_sql_traces_xl": {
     "difficulty": "nightmare",
     "points": 65,
-    "budget": 20000,
+    "budget": 10000,
     "category": "write",
     "tags": [
       "sql",
       "inference"
+    ]
+  },
+  "23_js_cipher_traces": {
+    "difficulty": "hard",
+    "points": 35,
+    "budget": 2500,
+    "category": "js-inference",
+    "tags": [
+      "js",
+      "inference"
+    ]
+  },
+  "24_js_machine_traces": {
+    "difficulty": "brutal",
+    "points": 45,
+    "budget": 5000,
+    "category": "js-inference",
+    "tags": [
+      "js",
+      "inference",
+      "fsm"
+    ]
+  },
+  "25_js_eval_traces": {
+    "difficulty": "brutal",
+    "points": 45,
+    "budget": 5000,
+    "category": "js-inference",
+    "tags": [
+      "js",
+      "inference",
+      "eval"
+    ]
+  },
+  "26_repo_bughunt": {
+    "difficulty": "brutal",
+    "points": 50,
+    "budget": 5000,
+    "category": "repo-bughunt",
+    "tags": [
+      "repo",
+      "navigation",
+      "bugfix"
+    ]
+  },
+  "27_repo_bughunt_xl": {
+    "difficulty": "nightmare",
+    "points": 70,
+    "budget": 10000,
+    "category": "repo-bughunt",
+    "tags": [
+      "repo",
+      "navigation",
+      "bugfix"
     ]
   }
 }

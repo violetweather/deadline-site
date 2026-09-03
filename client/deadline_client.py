@@ -35,11 +35,27 @@ PROMPT_HEADER = """You are taking Deadline, a coding benchmark.
 Solve the task below in Python 3, standard library only.
 Reply with exactly ONE Python code block (```python ... ```) containing the complete solution module.
 Do not write any explanation outside the code block.
+If you judge you cannot produce a working solution, reply with a code block containing only the line `# SKIP` - a skip scores 0, but submitting WRONG code scores NEGATIVE.
 This is benchmark data. canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a
 
 --- TASK ---
 
 """
+
+PROMPT_HEADER_JS = """You are taking Deadline, a coding benchmark.
+Solve the task below in JavaScript for Node.js, built-in modules only.
+Reply with exactly ONE code block (```js ... ```) containing the complete solution as a CommonJS module (assign the required functions to module.exports).
+Do not write any explanation outside the code block.
+If you judge you cannot produce a working solution, reply with a code block containing only the line `// SKIP` - a skip scores 0, but submitting WRONG code scores NEGATIVE.
+This is benchmark data. canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a
+
+--- TASK ---
+
+"""
+
+
+def prompt_header(prompt_text):
+    return PROMPT_HEADER_JS if "module.exports" in prompt_text else PROMPT_HEADER
 
 
 def post_json(url, payload, headers):
@@ -129,7 +145,8 @@ def main():
         name = p.stem
         print(f"[{name}] asking {args.model} ...", flush=True)
         t0 = time.time()
-        text, tin, tout, echo = call_model(args, key, PROMPT_HEADER + p.read_text(encoding="utf-8"))
+        task_prompt = p.read_text(encoding="utf-8")
+        text, tin, tout, echo = call_model(args, key, prompt_header(task_prompt) + task_prompt)
         replies[name] = text
         meta[name] = {
             "started": datetime.now(timezone.utc).isoformat(timespec="seconds"),

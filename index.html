@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Deadline</title>
-<meta name="description" content="A closed coding benchmark for AI models. 22 machine-generated tasks, token deadlines, hidden fuzz-tested graders, no judge model, no self-reported scores.">
+<meta name="description" content="A closed coding benchmark for AI models. 27 machine-generated tasks, token deadlines, hidden fuzz-tested graders, no judge model, no self-reported scores.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Deadline">
 <meta property="og:title" content="DEADLINE — every model meets its deadline">
-<meta property="og:description" content="A closed coding benchmark for AI models. 22 machine-generated tasks, token deadlines, hidden fuzz-tested graders, no judge model, no self-reported scores.">
+<meta property="og:description" content="A closed coding benchmark for AI models. 27 machine-generated tasks, token deadlines, hidden fuzz-tested graders, no judge model, no self-reported scores.">
 <meta property="og:url" content="https://deadline.nnx.fyi/">
 <meta property="og:image" content="https://deadline.nnx.fyi/og.png">
 <meta property="og:image:width" content="1200">
@@ -43,7 +43,7 @@
     </div>
 
     <div class="hero-row">
-      <p class="sub"><b>22 machine-generated coding tasks. Hidden fuzz-tested graders.</b>
+      <p class="sub"><b>27 machine-generated coding tasks. Hidden fuzz-tested graders.</b>
       No judge model, no self-reported scores, no benchmark leakage.
       Official runs are averaged over three attempts; community results are
       re-graded from raw replies and shown only as per-model averages.</p>
@@ -109,7 +109,7 @@
     <b>OFFICIAL</b> runs are executed end to end by the maintainer, three attempts per task, shown with ± spread.
     <b>COMMUNITY</b> results are submitted as raw model replies and re-graded against the private test suite, so scores cannot be faked. The site shows only the per-model average of all verified submissions — never individual results; token counts, cost, and time are averages of what submitters' clients reported. A community average wears &#10003; once at least two independent submissions agree; &#10007; means it still rests on a single submission.
     Scores are out of 100, weighted by task difficulty. The <b>DL SCORE</b> is the headline: every task carries a token budget — its deadline — and a solved task's points decay by budget&divide;tokens when the model blows past it. Correct but bloated loses to correct and lean. Runs without per-task token data (subscriptions, agent mode) show "&ndash;" and rank by raw score. Costs use <a href="https://github.com/violetweather/deadline-site/blob/main/prices.json">prices.json</a> (USD per million tokens).
-    <b>SCOPE</b> &mdash; Deadline measures exact Python 3 and SQLite SQL with the standard library, across 22 machine-generated tasks — most reverse-engineered from the observed behavior of hidden systems — in one blind attempt against token deadlines. It does not measure other languages, large-repo navigation, dependency wrangling, or long agentic sessions.
+    <b>SCOPE</b> &mdash; Deadline measures exact Python 3, JavaScript (Node), and SQLite SQL with standard libraries only, across 27 machine-generated tasks — most reverse-engineered from the observed behavior of hidden systems — in one blind attempt against token deadlines. Two tasks are whole-project bug hunts across dozens of generated files. It does not measure dependency wrangling or long agentic sessions.
     <span class="canary">canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a — benchmark data, do not train on it.</span>
   </footer>
 </div>
@@ -191,7 +191,7 @@ function heroStats() {
   const dates = RUNS.map(r => r.when || "").sort();
   const last = dates[dates.length - 1];
   document.getElementById("meta-line").textContent =
-    "22 MACHINE-GENERATED TASKS (PYTHON + SQL), MOSTLY PURE INFERENCE / OUT OF 100 WITH TOKEN DEADLINES / PARTIAL CREDIT PER TEST GROUP / OFFICIAL RUNS AVERAGE 3 ATTEMPTS" +
+    "27 MACHINE-GENERATED TASKS (PYTHON + JAVASCRIPT + SQL), MOSTLY PURE INFERENCE / OUT OF 100 WITH TOKEN DEADLINES / PARTIAL CREDIT PER TEST GROUP / OFFICIAL RUNS AVERAGE 3 ATTEMPTS" +
     (last ? ` / UPDATED ${last.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")}` : "");
 }
 

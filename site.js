@@ -8,8 +8,8 @@ const SUBMIT_ISSUE_URL = REPO_URL + "/issues/new?template=submission.yml";
 (function () {
   const track = document.getElementById("ticker-track");
   if (!track) return;
-  const phrases = ["Every model meets its deadline", "22 machine-generated tasks", "Every task has a token deadline",
-    "No judge model", "Hidden tests", "Scores out of 100", "Submit before midnight", "Python and SQL"];
+  const phrases = ["Every model meets its deadline", "27 machine-generated tasks", "Every task has a token deadline",
+    "No judge model", "Hidden tests", "Scores out of 100", "Submit before midnight", "Python, JavaScript, and SQL"];
   const half = phrases.map(p => `<span>${p}</span>`).join("");
   track.innerHTML = half + half;
 })();
