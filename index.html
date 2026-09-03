@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Doto:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
@@ -300,6 +300,40 @@ function modeOf(r) {
   return r.mode || (r.tokens_out || r.cost_usd != null ? "api" : "sub");
 }
 
+function detailHTML(r, cols) {
+  if (!r.task_detail) return "";
+  const rows = Object.entries(r.task_detail).map(([t, d]) => {
+    let v, cls;
+    if (d.credit >= 1) { v = "PASS"; cls = "ok"; }
+    else if (d.credit > 0) { v = `PART ${Math.round(d.credit * 100)}%`; cls = "part"; }
+    else if (d.credit < 0) { v = "WRONG"; cls = "bad"; }
+    else if ((d.note || "").toLowerCase().includes("skip")) { v = "SKIP"; cls = "skip"; }
+    else { v = "FAIL"; cls = "bad"; }
+    return `<div class="td-row">
+      <span class="td-name">${esc(t)}</span>
+      <span class="td-diff ${esc(d.difficulty)}">${esc(d.difficulty)}</span>
+      <span class="td-pts">${d.points} pts</span>
+      <span class="td-verdict ${cls}">${v}</span>
+      <span class="td-note">${esc(d.note || "")}${d.seconds ? ` <i>[${Math.round(d.seconds)}s]</i>` : ""}</span>
+    </div>`;
+  }).join("");
+  return `<tr class="detail-tr" hidden><td colspan="${cols}"><div class="task-detail">
+    ${r.commentary ? `<p class="td-comm">${esc(r.commentary)}</p>` : ""}${rows}
+  </div></td></tr>`;
+}
+
+function wireDetails(tableEl) {
+  tableEl.addEventListener("click", e => {
+    const tr = e.target.closest("tr.click-row");
+    if (!tr || !tableEl.contains(tr)) return;
+    const det = tr.nextElementSibling;
+    if (det && det.classList.contains("detail-tr")) {
+      det.hidden = !det.hidden;
+      tr.classList.toggle("open", !det.hidden);
+    }
+  });
+}
+
 function stampOf(r) {
   const confirmed = (r.samples || 1) >= 2;
   return r.official
@@ -322,8 +356,9 @@ function table(runs) {
   const rows = [...runs].sort((a, b) => rank(b) - rank(a)).map((r, i) => {
     const f = family(r.model), c = runCost(r), sc = scoreOf(r);
     const stamp = stampOf(r);
-    return `<tr>
-      <td class="rank">${String(i + 1).padStart(2, "0")}</td>
+    const canOpen = !!r.task_detail;
+    return `<tr class="${canOpen ? "click-row" : ""}" ${canOpen ? 'title="click for the task-by-task breakdown"' : ""}>
+      <td class="rank">${canOpen ? '<span class="chev">&#9656;</span>' : ""}${String(i + 1).padStart(2, "0")}</td>
       <td class="mname"><span class="pdot" style="background:${f.color}"></span>${esc(r.model)}<span class="eff">[${esc(r.effort)}]</span></td>
       <td class="scorebar"><div class="track"><div class="fill" style="width:${sc}%;background:${f.color}"></div></div></td>
       <td class="num">${r.dscore != null ? `<span class="score-v" style="color:var(--red)">${r.dscore}</span>` : `<span class="err" title="unmetered run: no per-task token data, so no Deadline Score">&ndash;</span>`}</td>
@@ -333,7 +368,8 @@ function table(runs) {
       <td class="num">${r.tokens_out ? r.tokens_out.toLocaleString() : "-"}</td>
       <td class="num">${r.seconds ? Math.round(r.seconds) + "s" : "-"}</td>
       <td>${stamp}</td>
-      <td class="num">${esc((r.when || "").replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"))}</td></tr>`;
+      <td class="num">${esc((r.when || "").replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"))}</td></tr>`
+      + detailHTML(r, 11);
   });
   t.innerHTML = head + rows.join("");
 }
@@ -349,8 +385,9 @@ function subTable(runs) {
   const rank = r => r.tdl_score != null ? r.tdl_score : scoreOf(r) - 0.05;
   const rows = [...runs].sort((a, b) => rank(b) - rank(a)).map((r, i) => {
     const f = family(r.model), sc = scoreOf(r);
-    return `<tr>
-      <td class="rank">${String(i + 1).padStart(2, "0")}</td>
+    const canOpen = !!r.task_detail;
+    return `<tr class="${canOpen ? "click-row" : ""}" ${canOpen ? 'title="click for the task-by-task breakdown"' : ""}>
+      <td class="rank">${canOpen ? '<span class="chev">&#9656;</span>' : ""}${String(i + 1).padStart(2, "0")}</td>
       <td class="mname"><span class="pdot" style="background:${f.color}"></span>${esc(r.model)}<span class="eff">[${esc(r.effort)}]</span></td>
       <td class="scorebar"><div class="track"><div class="fill" style="width:${sc}%;background:${f.color}"></div></div></td>
       <td class="num">${r.tdl_score != null ? `<span class="score-v" style="color:var(--red)">${r.tdl_score}</span>` : `<span class="err" title="no per-task timing data">&ndash;</span>`}</td>
@@ -358,7 +395,8 @@ function subTable(runs) {
       <td class="num">${r.passed}/${r.total}</td>
       <td class="num">${r.seconds ? Math.round(r.seconds) + "s" : "-"}</td>
       <td>${stampOf(r)}</td>
-      <td class="num">${esc((r.when || "").replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"))}</td></tr>`;
+      <td class="num">${esc((r.when || "").replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"))}</td></tr>`
+      + detailHTML(r, 9);
   });
   t.innerHTML = head + rows.join("");
 }
@@ -386,6 +424,9 @@ document.getElementById("metric-chips").addEventListener("click", e => {
   }
   render();
 });
+
+wireDetails(document.getElementById("t-runs"));
+wireDetails(document.getElementById("t-subs"));
 
 (async function init() {
   const [official, community, prices] = await Promise.all([
