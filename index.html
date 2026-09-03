@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Doto:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
@@ -105,11 +105,6 @@
     <div class="panel-body chart-scroll"><table id="t-runs"></table></div>
   </div>
 
-  <div class="panel" id="skills-panel" hidden>
-    <div class="panel-head">Skill breakdown &mdash; % of points earned per skill area</div>
-    <div class="panel-body chart-scroll"><table id="t-skills"></table></div>
-  </div>
-
   <footer>
     <b>OFFICIAL</b> runs are executed end to end by the maintainer, three attempts per task, shown with ± spread.
     <b>COMMUNITY</b> results are submitted as raw model replies and re-graded against the private test suite, so scores cannot be faked. The site shows only the per-model average of all verified submissions — never individual results; token counts, cost, and time are averages of what submitters' clients reported. A community average wears &#10003; once at least two independent submissions agree; &#10007; means it still rests on a single submission.
@@ -120,7 +115,7 @@
 </div>
 <div id="tooltip"></div>
 
-<script src="site.js"></script>
+<script src="site.js?v=2"></script>
 <script>
 "use strict";
 const tooltip = document.getElementById("tooltip");
@@ -160,7 +155,7 @@ const METRICS = {
             fmt: v => v >= 1000 ? (v / 1000).toFixed(1) + "k" : v.toFixed(0) },
 };
 
-let RUNS = [], PRICES = {}, MANIFEST = {}, metric = "cost", source = "all";
+let RUNS = [], PRICES = {}, metric = "cost", source = "all";
 
 async function loadJSON(path, fallback) {
   try {
@@ -327,40 +322,12 @@ function table(runs) {
   t.innerHTML = head + rows.join("");
 }
 
-function skills(runs) {
-  const panel = document.getElementById("skills-panel");
-  const t = document.getElementById("t-skills");
-  const withTasks = runs.filter(r => r.tasks && Object.keys(r.tasks).length)
-    .sort((a, b) => scoreOf(b) - scoreOf(a)).slice(0, 6);
-  const tags = [...new Set(Object.values(MANIFEST).flatMap(m => m.tags || []))].sort();
-  if (!withTasks.length || !tags.length) { panel.hidden = true; return; }
-  panel.hidden = false;
-  const head = `<tr><th>Skill</th><th class="num">Tasks</th>` +
-    withTasks.map(r => `<th class="num"><span class="pdot" style="background:${family(r.model).color}"></span>${esc(r.model).slice(0, 16)}</th>`).join("") + `</tr>`;
-  const rows = tags.map(tag => {
-    const names = Object.keys(MANIFEST).filter(n => (MANIFEST[n].tags || []).includes(tag));
-    const maxp = names.reduce((a, n) => a + MANIFEST[n].points, 0);
-    const cells = withTasks.map(r => {
-      let earned = 0, covered = 0;
-      names.forEach(n => {
-        if (n in r.tasks) { earned += MANIFEST[n].points * r.tasks[n]; covered += MANIFEST[n].points; }
-      });
-      if (!covered) return `<td class="num">-</td>`;
-      const pct = Math.round(100 * earned / covered);
-      return `<td class="num"><span class="score-v" style="font-size:15px">${pct}</span></td>`;
-    }).join("");
-    return `<tr><td class="mname" style="text-transform:capitalize">${esc(tag)}</td><td class="num">${names.length}</td>${cells}</tr>`;
-  }).join("");
-  t.innerHTML = head + rows;
-}
-
 function render() {
   const runs = filtered();
   heroStats();
   legend(runs);
   frontier(runs);
   table(runs);
-  skills(runs);
 }
 
 document.getElementById("metric-chips").addEventListener("click", e => {
@@ -377,14 +344,12 @@ document.getElementById("metric-chips").addEventListener("click", e => {
 });
 
 (async function init() {
-  const [official, community, prices, manifest] = await Promise.all([
+  const [official, community, prices] = await Promise.all([
     loadJSON("data/official.json", []),
     loadJSON("data/community.json", []),
     loadJSON("prices.json", {}),
-    loadJSON("data/tasks.json", {}),
   ]);
   PRICES = prices;
-  MANIFEST = manifest;
   RUNS = [...official, ...community];
   const sel = document.getElementById("f-effort");
   [...new Set(RUNS.map(r => r.effort))].sort().forEach(e => {
