@@ -306,7 +306,7 @@ function detailHTML(r, cols) {
     let v, cls;
     if (d.credit >= 1) { v = "PASS"; cls = "ok"; }
     else if (d.credit > 0) { v = `PART ${Math.round(d.credit * 100)}%`; cls = "part"; }
-    else if (d.credit < 0) { v = "WRONG"; cls = "bad"; }
+    else if (d.credit < 0) { v = `WRONG ${Math.round(d.credit * 1000) / 10}%`; cls = "bad"; }
     else if ((d.note || "").toLowerCase().includes("skip")) { v = "SKIP"; cls = "skip"; }
     else { v = "FAIL"; cls = "bad"; }
     return `<div class="td-row">

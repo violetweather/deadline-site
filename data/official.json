@@ -30,8 +30,8 @@
         "seconds": 125.2
       },
       "05_cipher_d10": {
-        "credit": -0.15,
-        "note": "1/3 groups, 0% credit (failed: heldout, fuzz)",
+        "credit": -0.067,
+        "note": "1/3 groups, 0% credit (failed: heldout, fuzz) [theory matched 33% of hidden cases]",
         "difficulty": "nightmare",
         "points": 120,
         "seconds": 197.9
@@ -149,8 +149,8 @@
         "seconds": 57.8
       },
       "22_sql_traces_xl": {
-        "credit": -0.15,
-        "note": "1/3 groups, 0% credit (failed: heldout, fuzz)",
+        "credit": -0.017,
+        "note": "1/3 groups, 0% credit (failed: heldout, fuzz) [theory matched 66% of hidden cases]",
         "difficulty": "nightmare",
         "points": 65,
         "seconds": 80.6
@@ -163,8 +163,8 @@
         "seconds": 290.0
       },
       "24_js_machine_traces": {
-        "credit": -0.15,
-        "note": "1/3 groups, 0% credit (failed: heldout, fuzz)",
+        "credit": -0.124,
+        "note": "1/3 groups, 0% credit (failed: heldout, fuzz) [theory matched 9% of hidden cases]",
         "difficulty": "brutal",
         "points": 45,
         "seconds": 345.9
@@ -191,7 +191,7 @@
         "seconds": 23.2
       }
     },
-    "commentary": "Fully passed 24/27 tasks. Submitted wrong code on cipher_d10, sql_traces_xl, js_machine_traces (each costs -15% of its points: confidently wrong scores below an honest skip).",
+    "commentary": "Fully passed 24/27 tasks. Submitted wrong code on cipher_d10, sql_traces_xl, js_machine_traces (penalty up to -15% of points, scaled by how far each dead theory was from the hidden truth).",
     "id": "official-opus-v24-medium",
     "model": "claude-opus-5",
     "effort": "medium",
@@ -199,9 +199,9 @@
     "verified": true,
     "submitted_by": null,
     "when": "20260903",
-    "score": 78.8,
+    "score": 80.4,
     "score_err": 0,
-    "strict_score": 78.8,
+    "strict_score": 80.4,
     "dscore": null,
     "samples": 1,
     "passed": 24,
@@ -211,14 +211,14 @@
     "cost_usd": null,
     "seconds": 2837.1,
     "mode": "sub",
-    "tdl_score": 76.2,
+    "tdl_score": 77.8,
     "flags": [],
     "tasks": {
       "01_cipher_d2": 1.0,
       "02_cipher_d4": 1.0,
       "03_cipher_d6": 1.0,
       "04_cipher_d8": 1.0,
-      "05_cipher_d10": -0.15,
+      "05_cipher_d10": -0.067,
       "06_machine_a": 1.0,
       "07_machine_traces": 1.0,
       "08_codec_a": 1.0,
@@ -235,9 +235,253 @@
       "19_redacted_machine": 1.0,
       "20_sql_report": 1.0,
       "21_sql_traces": 1.0,
-      "22_sql_traces_xl": -0.15,
+      "22_sql_traces_xl": -0.017,
       "23_js_cipher_traces": 1.0,
-      "24_js_machine_traces": -0.15,
+      "24_js_machine_traces": -0.124,
+      "25_js_eval_traces": 1.0,
+      "26_repo_bughunt": 1.0,
+      "27_repo_bughunt_xl": 1.0
+    }
+  },
+  {
+    "task_detail": {
+      "01_cipher_d2": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "medium",
+        "points": 10,
+        "seconds": null
+      },
+      "02_cipher_d4": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "points": 20,
+        "seconds": 82.5
+      },
+      "03_cipher_d6": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "points": 35,
+        "seconds": 261.3
+      },
+      "04_cipher_d8": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "nightmare",
+        "points": 70,
+        "seconds": 240.9
+      },
+      "05_cipher_d10": {
+        "credit": -0.065,
+        "note": "1/3 groups, 0% credit (failed: heldout, fuzz) [theory matched 34% of hidden cases]",
+        "difficulty": "nightmare",
+        "points": 120,
+        "seconds": 291.3
+      },
+      "06_machine_a": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "medium",
+        "points": 15,
+        "seconds": 15.0
+      },
+      "07_machine_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "points": 30,
+        "seconds": 73.4
+      },
+      "08_codec_a": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "medium",
+        "points": 15,
+        "seconds": 16.6
+      },
+      "09_codec_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "points": 40,
+        "seconds": 29.9
+      },
+      "10_strange_calendar": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "points": 20,
+        "seconds": 21.9
+      },
+      "11_eval_a": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "points": 20,
+        "seconds": 18.7
+      },
+      "12_eval_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "points": 40,
+        "seconds": 71.5
+      },
+      "13_pairs_a": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "points": 25,
+        "seconds": 10.4
+      },
+      "14_pairs_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "points": 40,
+        "seconds": 15.4
+      },
+      "15_midnight_machine": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "nightmare",
+        "points": 100,
+        "seconds": 271.1
+      },
+      "16_calendar_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "points": 45,
+        "seconds": 64.1
+      },
+      "17_machine_traces_xl": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "nightmare",
+        "points": 70,
+        "seconds": 283.8
+      },
+      "18_codec_traces_xl": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "nightmare",
+        "points": 70,
+        "seconds": 46.1
+      },
+      "19_redacted_machine": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "nightmare",
+        "points": 90,
+        "seconds": 76.5
+      },
+      "20_sql_report": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "points": 20,
+        "seconds": 15.2
+      },
+      "21_sql_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "points": 45,
+        "seconds": 62.1
+      },
+      "22_sql_traces_xl": {
+        "credit": -0.017,
+        "note": "1/3 groups, 0% credit (failed: heldout, fuzz) [theory matched 66% of hidden cases]",
+        "difficulty": "nightmare",
+        "points": 65,
+        "seconds": 112.2
+      },
+      "23_js_cipher_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "points": 35,
+        "seconds": 348.6
+      },
+      "24_js_machine_traces": {
+        "credit": -0.13,
+        "note": "1/3 groups, 0% credit (failed: heldout, fuzz) [theory matched 7% of hidden cases]",
+        "difficulty": "brutal",
+        "points": 45,
+        "seconds": 540.5
+      },
+      "25_js_eval_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "points": 45,
+        "seconds": 103.2
+      },
+      "26_repo_bughunt": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "points": 50,
+        "seconds": 21.9
+      },
+      "27_repo_bughunt_xl": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "nightmare",
+        "points": 70,
+        "seconds": 26.3
+      }
+    },
+    "commentary": "Fully passed 24/27 tasks. Submitted wrong code on cipher_d10, sql_traces_xl, js_machine_traces (penalty up to -15% of points, scaled by how far each dead theory was from the hidden truth).",
+    "id": "official-opus5-high-high",
+    "model": "claude-opus-5",
+    "effort": "high",
+    "official": true,
+    "verified": true,
+    "submitted_by": null,
+    "when": "20260903",
+    "score": 80.4,
+    "score_err": 0,
+    "strict_score": 80.4,
+    "dscore": null,
+    "samples": 1,
+    "passed": 24,
+    "total": 27,
+    "tokens_in": 0,
+    "tokens_out": 0,
+    "cost_usd": null,
+    "seconds": 3120.4,
+    "mode": "sub",
+    "tdl_score": 78.4,
+    "flags": [],
+    "tasks": {
+      "01_cipher_d2": 1.0,
+      "02_cipher_d4": 1.0,
+      "03_cipher_d6": 1.0,
+      "04_cipher_d8": 1.0,
+      "05_cipher_d10": -0.065,
+      "06_machine_a": 1.0,
+      "07_machine_traces": 1.0,
+      "08_codec_a": 1.0,
+      "09_codec_traces": 1.0,
+      "10_strange_calendar": 1.0,
+      "11_eval_a": 1.0,
+      "12_eval_traces": 1.0,
+      "13_pairs_a": 1.0,
+      "14_pairs_traces": 1.0,
+      "15_midnight_machine": 1.0,
+      "16_calendar_traces": 1.0,
+      "17_machine_traces_xl": 1.0,
+      "18_codec_traces_xl": 1.0,
+      "19_redacted_machine": 1.0,
+      "20_sql_report": 1.0,
+      "21_sql_traces": 1.0,
+      "22_sql_traces_xl": -0.017,
+      "23_js_cipher_traces": 1.0,
+      "24_js_machine_traces": -0.13,
       "25_js_eval_traces": 1.0,
       "26_repo_bughunt": 1.0,
       "27_repo_bughunt_xl": 1.0
@@ -260,22 +504,22 @@
         "seconds": 496.1
       },
       "03_cipher_d6": {
-        "credit": -0.15,
-        "note": "0/3 groups, 0% credit (failed: examples, heldout, fuzz)",
+        "credit": -0.096,
+        "note": "0/3 groups, 0% credit (failed: examples, heldout, fuzz) [theory matched 20% of hidden cases]",
         "difficulty": "brutal",
         "points": 35,
         "seconds": 267.3
       },
       "04_cipher_d8": {
-        "credit": -0.15,
-        "note": "1/3 groups, 0% credit (failed: heldout, fuzz)",
+        "credit": -0.101,
+        "note": "1/3 groups, 0% credit (failed: heldout, fuzz) [theory matched 18% of hidden cases]",
         "difficulty": "nightmare",
         "points": 70,
         "seconds": 75.1
       },
       "05_cipher_d10": {
-        "credit": -0.15,
-        "note": "0/3 groups, 0% credit (failed: examples, heldout, fuzz)",
+        "credit": -0.108,
+        "note": "0/3 groups, 0% credit (failed: examples, heldout, fuzz) [theory matched 15% of hidden cases]",
         "difficulty": "nightmare",
         "points": 120,
         "seconds": 40.4
@@ -358,8 +602,8 @@
         "seconds": 91.0
       },
       "17_machine_traces_xl": {
-        "credit": -0.15,
-        "note": "1/3 groups, 0% credit (failed: heldout, fuzz)",
+        "credit": -0.111,
+        "note": "1/3 groups, 0% credit (failed: heldout, fuzz) [theory matched 14% of hidden cases]",
         "difficulty": "nightmare",
         "points": 70,
         "seconds": 147.7
@@ -393,8 +637,8 @@
         "seconds": 134.8
       },
       "22_sql_traces_xl": {
-        "credit": -0.15,
-        "note": "1/3 groups, 0% credit (failed: heldout, fuzz)",
+        "credit": -0.078,
+        "note": "1/3 groups, 0% credit (failed: heldout, fuzz) [theory matched 28% of hidden cases]",
         "difficulty": "nightmare",
         "points": 65,
         "seconds": 156.7
@@ -435,7 +679,7 @@
         "seconds": 47.5
       }
     },
-    "commentary": "Fully passed 19/27 tasks. Submitted wrong code on cipher_d6, cipher_d8, cipher_d10, machine_traces_xl, sql_traces_xl (each costs -15% of its points: confidently wrong scores below an honest skip). Declared # SKIP on js_cipher_traces, js_machine_traces (scored 0, no penalty - it knew what it didn't know). Partial credit on midnight_machine (77%).",
+    "commentary": "Fully passed 19/27 tasks. Submitted wrong code on cipher_d6, cipher_d8, cipher_d10, machine_traces_xl, sql_traces_xl (penalty up to -15% of points, scaled by how far each dead theory was from the hidden truth). Declared # SKIP on js_cipher_traces, js_machine_traces (scored 0, no penalty - it knew what it didn't know). Partial credit on midnight_machine (77%).",
     "id": "official-sonnet5-high-high",
     "model": "claude-sonnet-5",
     "effort": "high",
@@ -443,9 +687,9 @@
     "verified": true,
     "submitted_by": null,
     "when": "20260903",
-    "score": 58.6,
+    "score": 60.0,
     "score_err": 0,
-    "strict_score": 58.6,
+    "strict_score": 60.0,
     "dscore": null,
     "samples": 1,
     "passed": 19,
@@ -455,14 +699,14 @@
     "cost_usd": null,
     "seconds": 2771.8,
     "mode": "sub",
-    "tdl_score": 57.0,
+    "tdl_score": 58.4,
     "flags": [],
     "tasks": {
       "01_cipher_d2": 1.0,
       "02_cipher_d4": 1.0,
-      "03_cipher_d6": -0.15,
-      "04_cipher_d8": -0.15,
-      "05_cipher_d10": -0.15,
+      "03_cipher_d6": -0.096,
+      "04_cipher_d8": -0.101,
+      "05_cipher_d10": -0.108,
       "06_machine_a": 1.0,
       "07_machine_traces": 1.0,
       "08_codec_a": 1.0,
@@ -474,12 +718,12 @@
       "14_pairs_traces": 1.0,
       "15_midnight_machine": 0.766,
       "16_calendar_traces": 1.0,
-      "17_machine_traces_xl": -0.15,
+      "17_machine_traces_xl": -0.111,
       "18_codec_traces_xl": 1.0,
       "19_redacted_machine": 1.0,
       "20_sql_report": 1.0,
       "21_sql_traces": 1.0,
-      "22_sql_traces_xl": -0.15,
+      "22_sql_traces_xl": -0.078,
       "23_js_cipher_traces": 0.0,
       "24_js_machine_traces": 0.0,
       "25_js_eval_traces": 1.0,
