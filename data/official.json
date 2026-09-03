@@ -1,7 +1,7 @@
 [
   {
     "id": "official-opus-v24-medium",
-    "model": "opus-v24",
+    "model": "claude-opus-5",
     "effort": "medium",
     "official": true,
     "verified": true,
