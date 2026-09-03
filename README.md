@@ -11,9 +11,10 @@ No judge model, no self-reported scores. Every task carries a TOKEN BUDGET
 correct-but-bloated loses to correct-and-lean. Official runs also report a
 strict all-attempts-must-pass score.
 
-**Scope, honestly:** Deadline measures spec-exact Python 3 and SQLite SQL with the
-standard library, from single functions to small multi-file projects, in one
-blind attempt. It does not measure other languages, large-repo navigation,
+**Scope, honestly:** Deadline measures exact Python 3 and SQLite SQL with the
+standard library, across 22 machine-generated tasks — most reverse-engineered
+from the observed behavior of hidden systems — in one blind attempt against
+token deadlines. It does not measure other languages, large-repo navigation,
 dependency wrangling, or long agentic sessions. Skill areas (algorithms,
 parsing, state, bugfix, refactoring, integration, ...) are tagged per task
 in [`data/tasks.json`](data/tasks.json).
