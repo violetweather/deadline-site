@@ -13,7 +13,7 @@ standard library, from single functions to small multi-file projects, in one
 blind attempt. It does not measure other languages, large-repo navigation,
 dependency wrangling, or long agentic sessions. Skill areas (algorithms,
 parsing, state, bugfix, refactoring, integration, ...) are tagged per task
-in [`data/tasks.json`](data/tasks.json) and broken down on the leaderboard.
+in [`data/tasks.json`](data/tasks.json).
 
 **Leaderboard:** https://deadline.nnx.fyi/
 
