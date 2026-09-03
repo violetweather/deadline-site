@@ -18,6 +18,8 @@
     "tokens_out": 0,
     "cost_usd": null,
     "seconds": 2837.1,
+    "mode": "sub",
+    "tdl_score": 76.2,
     "flags": [],
     "tasks": {
       "01_cipher_d2": 1.0,

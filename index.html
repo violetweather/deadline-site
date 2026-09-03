@@ -101,14 +101,19 @@
   </div>
 
   <div class="panel">
-    <div class="panel-head">Run manifest</div>
+    <div class="panel-head">API runs &mdash; token deadlines</div>
     <div class="panel-body chart-scroll"><table id="t-runs"></table></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">Subscription / agent runs &mdash; wall-clock deadlines</div>
+    <div class="panel-body chart-scroll"><table id="t-subs"></table></div>
   </div>
 
   <footer>
     <b>OFFICIAL</b> runs are executed end to end by the maintainer, three attempts per task, shown with ± spread.
     <b>COMMUNITY</b> results are submitted as raw model replies and re-graded against the private test suite, so scores cannot be faked. The site shows only the per-model average of all verified submissions — never individual results; token counts, cost, and time are averages of what submitters' clients reported. A community average wears &#10003; once at least two independent submissions agree; &#10007; means it still rests on a single submission.
-    Scores are out of 100, weighted by task difficulty. The <b>DL SCORE</b> is the headline: every task carries a token budget — its deadline — and a solved task's points decay by budget&divide;tokens when the model blows past it. Correct but bloated loses to correct and lean. Runs without per-task token data (subscriptions, agent mode) show "&ndash;" and rank by raw score. Costs use <a href="https://github.com/violetweather/deadline-site/blob/main/prices.json">prices.json</a> (USD per million tokens).
+    Scores are out of 100, weighted by task difficulty. The <b>DL SCORE</b> is the headline: every task carries a token budget — its deadline — and a solved task's points decay by budget&divide;tokens when the model blows past it. Correct but bloated loses to correct and lean. Runs without per-task token metering (subscriptions, agent mode) live on their own <b>SUBSCRIPTION / AGENT</b> board and carry a <b>TIME-DL</b> score instead — the same deadline idea with wall-clock budgets per task, from answer timestamps. The two boards are not directly comparable: API runs pay in tokens, agent runs pay in time. Costs use <a href="https://github.com/violetweather/deadline-site/blob/main/prices.json">prices.json</a> (USD per million tokens).
     <b>SCOPE</b> &mdash; Deadline measures exact Python 3, JavaScript (Node), and SQLite SQL with standard libraries only, across 27 machine-generated tasks — most reverse-engineered from the observed behavior of hidden systems — in one blind attempt against token deadlines. Two tasks are whole-project bug hunts across dozens of generated files. It does not measure dependency wrangling or long agentic sessions.
     <span class="canary">canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a — benchmark data, do not train on it.</span>
   </footer>
@@ -181,7 +186,7 @@ function filtered() {
 
 function heroStats() {
   const rows = [
-    ["tasks", 22], ["max score", 100],
+    ["tasks", Math.max(27, ...RUNS.map(r => r.total || 0))], ["max score", 100],
     ["models", new Set(RUNS.map(r => r.model)).size],
     ["runs", RUNS.length],
     ["submissions", fmtCount(RUNS.filter(r => !r.official).reduce((a, r) => a + (r.samples || 1), 0))],
@@ -209,7 +214,7 @@ function frontier(runs) {
   document.getElementById("metric-name").textContent = M.label;
   const rows = runs.filter(r => M.get(r) != null);
   if (!rows.length) {
-    host.innerHTML = `<div class="empty">Nothing submitted. The deadline passes for everyone.</div>`;
+    host.innerHTML = `<div class="empty">No metered API runs yet. Subscription and agent runs live on their own board below.</div>`;
     return;
   }
   const W = 980, H = 440, L = 50, R = 30, T = 26, B = 48;
@@ -291,10 +296,24 @@ function frontier(runs) {
   attachTips(host);
 }
 
+function modeOf(r) {
+  return r.mode || (r.tokens_out || r.cost_usd != null ? "api" : "sub");
+}
+
+function stampOf(r) {
+  const confirmed = (r.samples || 1) >= 2;
+  return r.official
+    ? `<span class="stamp official">Official</span>`
+    : `<span class="stamp community">Community<b>&times;${fmtCount(r.samples || 1)}</b></span>` +
+      `<span class="vmark ${confirmed ? "ok" : "no"}" title="${confirmed
+        ? "confirmed by multiple independent submissions"
+        : "single submission — awaiting a second that agrees"}">${confirmed ? "&#10003;" : "&#10007;"}</span>`;
+}
+
 function table(runs) {
   const t = document.getElementById("t-runs");
   if (!runs.length) {
-    t.innerHTML = `<tr><td class="empty">Nothing submitted. The deadline passes for everyone.</td></tr>`;
+    t.innerHTML = `<tr><td class="empty">No metered API runs yet. Subscription and agent runs live on the board below.</td></tr>`;
     return;
   }
   const head = `<tr><th></th><th>Model</th><th></th><th class="num" title="correctness x token budgets: points decay when a task blows past its token deadline">DL Score</th><th class="num">Score</th><th class="num">Tasks</th>
@@ -302,13 +321,7 @@ function table(runs) {
   const rank = r => r.dscore != null ? r.dscore : scoreOf(r) - 0.05;
   const rows = [...runs].sort((a, b) => rank(b) - rank(a)).map((r, i) => {
     const f = family(r.model), c = runCost(r), sc = scoreOf(r);
-    const confirmed = (r.samples || 1) >= 2;
-    const stamp = r.official
-      ? `<span class="stamp official">Official</span>`
-      : `<span class="stamp community">Community<b>&times;${fmtCount(r.samples || 1)}</b></span>` +
-        `<span class="vmark ${confirmed ? "ok" : "no"}" title="${confirmed
-          ? "confirmed by multiple independent submissions"
-          : "single submission — awaiting a second that agrees"}">${confirmed ? "&#10003;" : "&#10007;"}</span>`;
+    const stamp = stampOf(r);
     return `<tr>
       <td class="rank">${String(i + 1).padStart(2, "0")}</td>
       <td class="mname"><span class="pdot" style="background:${f.color}"></span>${esc(r.model)}<span class="eff">[${esc(r.effort)}]</span></td>
@@ -325,12 +338,40 @@ function table(runs) {
   t.innerHTML = head + rows.join("");
 }
 
+function subTable(runs) {
+  const t = document.getElementById("t-subs");
+  if (!runs.length) {
+    t.innerHTML = `<tr><td class="empty">Nothing submitted. The deadline passes for everyone.</td></tr>`;
+    return;
+  }
+  const head = `<tr><th></th><th>Model</th><th></th><th class="num" title="correctness x wall-clock budgets: points decay when a task takes longer than its time deadline">Time-DL</th><th class="num">Score</th><th class="num">Tasks</th>
+    <th class="num">Time</th><th>Source</th><th>Date</th></tr>`;
+  const rank = r => r.tdl_score != null ? r.tdl_score : scoreOf(r) - 0.05;
+  const rows = [...runs].sort((a, b) => rank(b) - rank(a)).map((r, i) => {
+    const f = family(r.model), sc = scoreOf(r);
+    return `<tr>
+      <td class="rank">${String(i + 1).padStart(2, "0")}</td>
+      <td class="mname"><span class="pdot" style="background:${f.color}"></span>${esc(r.model)}<span class="eff">[${esc(r.effort)}]</span></td>
+      <td class="scorebar"><div class="track"><div class="fill" style="width:${sc}%;background:${f.color}"></div></div></td>
+      <td class="num">${r.tdl_score != null ? `<span class="score-v" style="color:var(--red)">${r.tdl_score}</span>` : `<span class="err" title="no per-task timing data">&ndash;</span>`}</td>
+      <td class="num"><span class="score-v">${sc}</span>${r.score_err ? `<span class="err">±${r.score_err}</span>` : ""}</td>
+      <td class="num">${r.passed}/${r.total}</td>
+      <td class="num">${r.seconds ? Math.round(r.seconds) + "s" : "-"}</td>
+      <td>${stampOf(r)}</td>
+      <td class="num">${esc((r.when || "").replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"))}</td></tr>`;
+  });
+  t.innerHTML = head + rows.join("");
+}
+
 function render() {
   const runs = filtered();
+  const api = runs.filter(r => modeOf(r) === "api");
+  const sub = runs.filter(r => modeOf(r) === "sub");
   heroStats();
   legend(runs);
-  frontier(runs);
-  table(runs);
+  frontier(api);
+  table(api);
+  subTable(sub);
 }
 
 document.getElementById("metric-chips").addEventListener("click", e => {
