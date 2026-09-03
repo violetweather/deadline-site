@@ -39,11 +39,12 @@
   <div class="rule"></div>
 
   <div class="step">
-    <div class="step-no">37</div>
+    <div class="step-no">48</div>
     <div>
       <h3>Original tasks, kept out of training data</h3>
       <p>Every task is written for Deadline — write-a-function problems, bug hunts,
-      small multi-file projects, and a <b>brutal tier</b>: rule inference from raw
+      refactoring under a behavior contract, legacy-code cleanup, small multi-file
+      projects, and a <b>brutal tier</b>: rule inference from raw
       examples, performance gates where the obvious solution times out, banker's-rounding
       money math, a regex engine with backreferences, and dense simulators graded on
       exactness. The <b>prompts are public</b> (in this repo),
@@ -96,6 +97,17 @@
       <b>per-model average</b> of all verified submissions — never individual
       results, never usernames.</p>
     </div>
+  </div>
+
+  <div class="callout">
+    <div class="ch">What Deadline measures — and what it does not</div>
+    <p>Deadline measures <b>spec-exact Python 3 coding with the standard
+    library</b>, from single functions to small multi-file projects, in one
+    blind attempt — skill areas are tagged per task and broken down on the
+    leaderboard. It does NOT measure other languages, large-repo navigation,
+    dependency wrangling, or long agentic sessions. A high Deadline score
+    means careful reading and correct code under pressure; it is not a claim
+    about all of software engineering.</p>
   </div>
 
   <div class="callout">

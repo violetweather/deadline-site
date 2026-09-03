@@ -43,7 +43,7 @@
     </div>
 
     <div class="hero-row">
-      <p class="sub"><b>37 original coding tasks. Hidden fuzz-tested graders.</b>
+      <p class="sub"><b>48 original coding tasks. Hidden fuzz-tested graders.</b>
       No judge model, no self-reported scores, no benchmark leakage.
       Official runs are averaged over three attempts; community results are
       re-graded from raw replies and shown only as per-model averages.</p>
@@ -105,10 +105,16 @@
     <div class="panel-body chart-scroll"><table id="t-runs"></table></div>
   </div>
 
+  <div class="panel" id="skills-panel" hidden>
+    <div class="panel-head">Skill breakdown &mdash; % of points earned per skill area</div>
+    <div class="panel-body chart-scroll"><table id="t-skills"></table></div>
+  </div>
+
   <footer>
     <b>OFFICIAL</b> runs are executed end to end by the maintainer, three attempts per task, shown with ± spread.
     <b>COMMUNITY</b> results are submitted as raw model replies and re-graded against the private test suite, so scores cannot be faked. The site shows only the per-model average of all verified submissions — never individual results; token counts, cost, and time are averages of what submitters' clients reported. A community average wears &#10003; once at least two independent submissions agree; &#10007; means it still rests on a single submission.
     Scores are out of 100, weighted by task difficulty. Costs use <a href="https://github.com/violetweather/deadline-site/blob/main/prices.json">prices.json</a> (USD per million tokens).
+    <b>SCOPE</b> &mdash; Deadline measures spec-exact Python 3 coding with the standard library, from single functions to small multi-file projects, in one blind attempt. It does not measure other languages, large-repo navigation, dependency wrangling, or long agentic sessions.
     <span class="canary">canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a — benchmark data, do not train on it.</span>
   </footer>
 </div>
@@ -154,7 +160,7 @@ const METRICS = {
             fmt: v => v >= 1000 ? (v / 1000).toFixed(1) + "k" : v.toFixed(0) },
 };
 
-let RUNS = [], PRICES = {}, metric = "cost", source = "all";
+let RUNS = [], PRICES = {}, MANIFEST = {}, metric = "cost", source = "all";
 
 async function loadJSON(path, fallback) {
   try {
@@ -180,7 +186,7 @@ function filtered() {
 
 function heroStats() {
   const rows = [
-    ["tasks", 37], ["max score", 100],
+    ["tasks", 48], ["max score", 100],
     ["models", new Set(RUNS.map(r => r.model)).size],
     ["runs", RUNS.length],
     ["submissions", fmtCount(RUNS.filter(r => !r.official).reduce((a, r) => a + (r.samples || 1), 0))],
@@ -190,7 +196,7 @@ function heroStats() {
   const dates = RUNS.map(r => r.when || "").sort();
   const last = dates[dates.length - 1];
   document.getElementById("meta-line").textContent =
-    "37 TASKS INCL. BRUTAL TIER / OUT OF 100, DIFFICULTY-WEIGHTED, PARTIAL CREDIT ON BRUTAL TASKS / OFFICIAL RUNS AVERAGE 3 ATTEMPTS" +
+    "48 TASKS INCL. BRUTAL TIER / OUT OF 100, DIFFICULTY-WEIGHTED, PARTIAL CREDIT ON BRUTAL TASKS / OFFICIAL RUNS AVERAGE 3 ATTEMPTS" +
     (last ? ` / UPDATED ${last.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")}` : "");
 }
 
@@ -264,7 +270,7 @@ function frontier(runs) {
       : `Community average of ${fmtCount(r.samples || 1)} submission(s)` +
         ((r.samples || 1) < 2 ? " · UNCONFIRMED until a second submission agrees" : "");
     const strictTxt = (r.samples || 1) > 1 && r.strict_score != null && r.strict_score !== sc
-      ? `<br>Strict (all attempts must pass): ${r.strict_score}/100` : "";
+      ? `<br>Strict (all attempts must pass): ${Math.round(r.strict_score * 10) / 10}/100` : "";
     const tip = `<b>${esc(r.model)}</b> <span style="opacity:.7">${esc(r.effort)}</span><br>` +
       `Score: ${sc}/100${errTxt}${strictTxt}<br>${M.label}: ${M.fmt(v)}<br>${srcTxt}`;
     svg += `<g class="pt">`;
@@ -310,7 +316,7 @@ function table(runs) {
       <td class="rank">${String(i + 1).padStart(2, "0")}</td>
       <td class="mname"><span class="pdot" style="background:${f.color}"></span>${esc(r.model)}<span class="eff">[${esc(r.effort)}]</span></td>
       <td class="scorebar"><div class="track"><div class="fill" style="width:${sc}%;background:${f.color}"></div></div></td>
-      <td class="num"><span class="score-v">${sc}</span>${r.score_err ? `<span class="err">±${r.score_err}</span>` : ""}${(r.samples || 1) > 1 && r.strict_score != null && r.strict_score !== sc ? `<br><span class="err" title="strict score: a task only counts if EVERY attempt passed">strict ${r.strict_score}</span>` : ""}</td>
+      <td class="num"><span class="score-v">${sc}</span>${r.score_err ? `<span class="err">±${r.score_err}</span>` : ""}${(r.samples || 1) > 1 && r.strict_score != null && r.strict_score !== sc ? `<br><span class="err" title="strict score: a task only counts if EVERY attempt passed">strict ${Math.round(r.strict_score * 10) / 10}</span>` : ""}</td>
       <td class="num">${r.passed}/${r.total}</td>
       <td class="num">${c != null ? "$" + c.toFixed(4) : "-"}</td>
       <td class="num">${r.tokens_out ? r.tokens_out.toLocaleString() : "-"}</td>
@@ -321,12 +327,40 @@ function table(runs) {
   t.innerHTML = head + rows.join("");
 }
 
+function skills(runs) {
+  const panel = document.getElementById("skills-panel");
+  const t = document.getElementById("t-skills");
+  const withTasks = runs.filter(r => r.tasks && Object.keys(r.tasks).length)
+    .sort((a, b) => scoreOf(b) - scoreOf(a)).slice(0, 6);
+  const tags = [...new Set(Object.values(MANIFEST).flatMap(m => m.tags || []))].sort();
+  if (!withTasks.length || !tags.length) { panel.hidden = true; return; }
+  panel.hidden = false;
+  const head = `<tr><th>Skill</th><th class="num">Tasks</th>` +
+    withTasks.map(r => `<th class="num"><span class="pdot" style="background:${family(r.model).color}"></span>${esc(r.model).slice(0, 16)}</th>`).join("") + `</tr>`;
+  const rows = tags.map(tag => {
+    const names = Object.keys(MANIFEST).filter(n => (MANIFEST[n].tags || []).includes(tag));
+    const maxp = names.reduce((a, n) => a + MANIFEST[n].points, 0);
+    const cells = withTasks.map(r => {
+      let earned = 0, covered = 0;
+      names.forEach(n => {
+        if (n in r.tasks) { earned += MANIFEST[n].points * r.tasks[n]; covered += MANIFEST[n].points; }
+      });
+      if (!covered) return `<td class="num">-</td>`;
+      const pct = Math.round(100 * earned / covered);
+      return `<td class="num"><span class="score-v" style="font-size:15px">${pct}</span></td>`;
+    }).join("");
+    return `<tr><td class="mname" style="text-transform:capitalize">${esc(tag)}</td><td class="num">${names.length}</td>${cells}</tr>`;
+  }).join("");
+  t.innerHTML = head + rows;
+}
+
 function render() {
   const runs = filtered();
   heroStats();
   legend(runs);
   frontier(runs);
   table(runs);
+  skills(runs);
 }
 
 document.getElementById("metric-chips").addEventListener("click", e => {
@@ -343,12 +377,14 @@ document.getElementById("metric-chips").addEventListener("click", e => {
 });
 
 (async function init() {
-  const [official, community, prices] = await Promise.all([
+  const [official, community, prices, manifest] = await Promise.all([
     loadJSON("data/official.json", []),
     loadJSON("data/community.json", []),
     loadJSON("prices.json", {}),
+    loadJSON("data/tasks.json", {}),
   ]);
   PRICES = prices;
+  MANIFEST = manifest;
   RUNS = [...official, ...community];
   const sel = document.getElementById("f-effort");
   [...new Set(RUNS.map(r => r.effort))].sort().forEach(e => {

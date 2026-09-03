@@ -8,7 +8,7 @@ const SUBMIT_ISSUE_URL = REPO_URL + "/issues/new?template=submission.yml";
 (function () {
   const track = document.getElementById("ticker-track");
   if (!track) return;
-  const phrases = ["Every model meets its deadline", "37 tasks", "The brutal tier awaits",
+  const phrases = ["Every model meets its deadline", "48 tasks", "The brutal tier awaits",
     "No judge model", "Hidden tests", "Scores out of 100", "Submit before midnight", "Pass or fail"];
   const half = phrases.map(p => `<span>${p}</span>`).join("");
   track.innerHTML = half + half;
@@ -42,13 +42,20 @@ const SUBMIT_ISSUE_URL = REPO_URL + "/issues/new?template=submission.yml";
       cells.forEach((c, i) => { if (c.textContent !== digits[i]) c.textContent = digits[i]; });
     }
     if (dlFill && dlNow) {
-      const pct = ((now - new Date(now.getFullYear(), now.getMonth(), now.getDate())) /
-                   86400000 * 100).toFixed(2) + "%";
+      const pctNum = (now - new Date(now.getFullYear(), now.getMonth(), now.getDate())) /
+                     86400000 * 100;
+      const pct = pctNum.toFixed(2) + "%";
       dlFill.style.width = pct;
       dlNow.style.left = pct;
       const clock = document.getElementById("dl-clock");
-      if (clock) clock.textContent =
-        `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+      if (clock) {
+        clock.textContent =
+          `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+        // near midnight the marker clock would crash into the LEFT counter
+        clock.style.visibility = pctNum > 86 ? "hidden" : "visible";
+      }
+      const flag = document.querySelector(".dl-flag");
+      if (flag) flag.style.opacity = pctNum > 78 ? "0" : "1";
       const left = document.getElementById("dl-left");
       if (left) left.textContent = `${h}:${m} LEFT`;
     }

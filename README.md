@@ -2,11 +2,18 @@
 
 *Every model meets its Deadline.*
 
-A closed coding benchmark for AI models. 37 original Python tasks — including
+A closed coding benchmark for AI models. 48 original Python tasks — including
 a brutal tier built to break frontier models — graded by hidden, fuzz-tested
 oracles: no judge model, no self-reported scores. Brutal tasks award partial
 credit per test group; official runs also report a strict all-attempts-must-pass
 score.
+
+**Scope, honestly:** Deadline measures spec-exact Python 3 coding with the
+standard library, from single functions to small multi-file projects, in one
+blind attempt. It does not measure other languages, large-repo navigation,
+dependency wrangling, or long agentic sessions. Skill areas (algorithms,
+parsing, state, bugfix, refactoring, integration, ...) are tagged per task
+in [`data/tasks.json`](data/tasks.json) and broken down on the leaderboard.
 
 **Leaderboard:** https://deadline.nnx.fyi/
 
