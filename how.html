@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Deadline works</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Doto:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
+<nav><div class="nav-in">
+  <a class="brand" href="index.html">DEADLINE<em>.</em></a>
+  <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+  <span class="nav-links">
+    <a class="active" href="how.html"><span>How it works</span></a>
+    <a href="submit.html"><span>Submit</span></a>
+    <a href="https://github.com/violetweather/deadline-site"><span>GitHub</span></a>
+  </span>
+</div></nav>
+
+<div class="wrap page">
+  <h1 class="page-title">How it <em>works</em></h1>
+  <p class="page-sub">Deadline is a closed coding benchmark. Models get one blind shot
+  at original tasks, and hidden tests decide. No judge model. No vibes.</p>
+  <div class="rule"></div>
+
+  <div class="step">
+    <div class="step-no">37</div>
+    <div>
+      <h3>Original tasks, kept out of training data</h3>
+      <p>Every task is written for Deadline — write-a-function problems, bug hunts,
+      small multi-file projects, and a <b>brutal tier</b>: rule inference from raw
+      examples, performance gates where the obvious solution times out, banker's-rounding
+      money math, a regex engine with backreferences, and dense simulators graded on
+      exactness. The <b>prompts are public</b> (in this repo),
+      but the <b>test suites and reference solutions are private</b>. Public
+      benchmark answers leak into training data and inflate scores; Deadline's
+      graders never leave the maintainer's machine.</p>
+      <p>Every prompt carries a canary GUID. If it ever appears in a model's
+      unprompted output, the set has leaked and gets rotated.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-no">&#8594;</div>
+    <div>
+      <h3>One blind attempt, graded by fuzz-tested oracles</h3>
+      <p>The model gets the task prompt and replies with code. That code runs
+      against hidden tests in a sandbox — including <b>fuzz oracles</b> that
+      compare it with a private reference on hundreds of random inputs, so
+      near-miss solutions that survive handpicked cases still die. No retries
+      after seeing errors, no judge model scoring style points. Brutal-tier
+      tasks award partial credit per test group; everything else is pass
+      or fail.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-no">100</div>
+    <div>
+      <h3>Scored out of 100, weighted by difficulty</h3>
+      <p>Tasks are worth points by difficulty — easy 6, medium 13, hard 18,
+      brutal 30 — normalized so a perfect run is always <b>100</b>. The brutal
+      tier alone carries about 40% of the score; that's the ceiling.</p>
+      <p>Official runs repeat every task <b>three times</b> and report the mean
+      with a ± spread, because models are random and single runs lie. A second
+      <b>strict score</b> counts a task only if every attempt held up — luck
+      doesn't survive it. Tasks the strongest models ace get retired and
+      replaced, so the ceiling keeps moving up.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-no">2&times;</div>
+    <div>
+      <h3>Two kinds of results</h3>
+      <p><b>OFFICIAL</b> — the maintainer runs the model end to end through the
+      API. Fully controlled, three attempts per task.</p>
+      <p><b>COMMUNITY</b> — anyone runs the public prompts against any model and
+      submits the raw replies. The maintainer re-grades those replies against the
+      private tests, so a score can't be made up. The site shows only the
+      <b>per-model average</b> of all verified submissions — never individual
+      results, never usernames.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="ch">What keeps it honest</div>
+    <p>Private tests · verified re-grading · canary GUID leak detection ·
+    sandboxed execution · global duplicate detection across all submissions ·
+    style-consistency review against other submissions of the same model ·
+    per-task receipts from the client (timings, token counts, the model name the
+    provider echoed back) · effort-label plausibility checks · a &#10003; / &#10007; mark
+    showing whether a community average is backed by more than one submission ·
+    difficulty-weighted scoring with error bars.
+    Costs come from token counts priced by a public, auto-updated
+    <a href="https://github.com/violetweather/deadline-site/blob/main/prices.json">price table</a>.</p>
+  </div>
+
+  <ul class="rules">
+    <li>No judge model — style earns nothing, only passing tests count.</li>
+    <li>No self-reported scores — every number on the site was graded here.</li>
+    <li>No second chances — one blind attempt per task, per sample.</li>
+  </ul>
+
+  <div class="bigcta btns">
+    <a class="btn primary" href="submit.html">Put a model on the board</a>
+    <a class="btn" href="index.html">Back to the leaderboard</a>
+  </div>
+
+  <footer>
+    Questions, corrections, price fixes — open an issue on
+    <a href="https://github.com/violetweather/deadline-site">GitHub</a>.
+    <span class="canary">canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a — benchmark data, do not train on it.</span>
+  </footer>
+</div>
+<script src="site.js"></script>
+</body>
+</html>

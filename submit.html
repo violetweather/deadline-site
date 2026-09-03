@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Submit to Deadline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Doto:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
+<nav><div class="nav-in">
+  <a class="brand" href="index.html">DEADLINE<em>.</em></a>
+  <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+  <span class="nav-links">
+    <a href="how.html"><span>How it works</span></a>
+    <a class="active" href="submit.html"><span>Submit</span></a>
+    <a href="https://github.com/violetweather/deadline-site"><span>GitHub</span></a>
+  </span>
+</div></nav>
+
+<div class="wrap page">
+  <h1 class="page-title">Submit a <em>result</em></h1>
+  <p class="page-sub">Run the public prompts against any model you can reach —
+  your API key, your machine. Send in the raw replies and the maintainer grades
+  them against the private tests. Verified, or it doesn't count.</p>
+  <div class="rule"></div>
+
+  <div class="step">
+    <div class="step-no">01</div>
+    <div>
+      <h3>Clone the repo</h3>
+      <pre class="cmd"><i>$ </i>git clone https://github.com/violetweather/deadline-site
+<i>$ </i>cd deadline-site</pre>
+      <p>The prompts live in <code class="k">prompts/</code>; the client script in
+      <code class="k">client/</code>. Python 3.9+, standard library only — nothing to install.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-no">02</div>
+    <div>
+      <h3>Run your model</h3>
+      <p>Point the client at any provider. Your key stays on your machine.</p>
+      <pre class="cmd"><i>$ </i>python client/deadline_client.py --type gemini --model gemini-2.5-flash --key-env GEMINI_API_KEY</pre>
+      <p><code class="k">--type openai</code> works for any OpenAI-compatible endpoint
+      (OpenAI, OpenRouter, Groq, and local servers like Ollama with
+      <code class="k">--base-url http://localhost:11434/v1</code> and no key).
+      <code class="k">--type anthropic</code> for Claude. Label a thinking setting with
+      <code class="k">--effort</code>.</p>
+      <p>The script asks your model every task once — <b>one blind attempt</b> —
+      and writes <code class="k">submission.json</code>: the raw replies plus token counts.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-no">03</div>
+    <div>
+      <h3>Open a submission issue</h3>
+      <p>Paste the <b>full contents</b> of <code class="k">submission.json</code> into the
+      form. Don't edit it — the graders notice.</p>
+      <div class="btns" style="margin-top:14px">
+        <a class="btn primary" href="https://github.com/violetweather/deadline-site/issues/new?template=submission.yml">Open the submission form</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-no">04</div>
+    <div>
+      <h3>Get graded</h3>
+      <p>The maintainer re-runs your replies against the private test suite in a
+      sandbox and posts the verified score on your issue. It's then folded into
+      your model's <b>community average</b> on the leaderboard — the site never
+      shows individual submissions or usernames.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="ch">The rules</div>
+    <ul class="rules" style="margin:0">
+      <li>One blind attempt per task — no retrying until it passes.</li>
+      <li>No hand-written or hand-edited "replies". Obvious ones get rejected.</li>
+      <li>No peeking at tests — you can't, they're private. That's the point.</li>
+    </ul>
+  </div>
+
+  <p class="fineprint">Submissions are graded in arrival order <em>&#10007;</em> the deadline is midnight <em>&#10007;</em> the deadline is always midnight</p>
+
+  <footer>
+    Trouble with the client script? Open a regular issue on
+    <a href="https://github.com/violetweather/deadline-site">GitHub</a>.
+    <span class="canary">canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a — benchmark data, do not train on it.</span>
+  </footer>
+</div>
+<script src="site.js"></script>
+</body>
+</html>
