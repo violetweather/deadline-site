@@ -22,10 +22,17 @@
 }
 * { box-sizing: border-box; }
 ::selection { background: var(--red); color: #0a0a0b; }
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
 body {
   margin: 0; background: var(--bg); color: var(--ink);
   font: 14px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif;
+  max-width: 100%;
   overflow-x: hidden;
+  overflow-x: clip;
 }
 body::after {
   content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 90;
