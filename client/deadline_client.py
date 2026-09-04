@@ -24,6 +24,7 @@ import argparse
 import http.client
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -61,12 +62,29 @@ def prompt_header(prompt_text):
 
 
 RETRY_WAITS = [5, 15, 30]
+CLIENT_VERSION = 3
 
 
-def post_json(url, payload, headers):
+def has_answer(text):
+    """Check presence only; incorrect code and explicit SKIPs are still answers."""
+    if not isinstance(text, str) or not text.strip():
+        return False
+    return re.fullmatch(r"```[^\n]*\n\s*```", text.strip()) is None
+
+
+def save_progress(path, model, replies, meta):
+    pending = path.with_name(path.name + ".tmp")
+    pending.write_text(json.dumps(
+        {"client": CLIENT_VERSION, "model": model, "replies": replies, "meta": meta}),
+        encoding="utf-8")
+    pending.replace(path)
+
+
+def post_json(url, payload, headers, failures=None):
     """POST with retries: slow generations get cancelled/dropped mid-stream
     by providers and proxies, so transient failures are retried, not fatal."""
     body = json.dumps(payload).encode("utf-8")
+    failures = failures if failures is not None else []
     for attempt in range(len(RETRY_WAITS) + 1):
         req = urllib.request.Request(
             url, data=body,
@@ -75,6 +93,7 @@ def post_json(url, payload, headers):
             with urllib.request.urlopen(req, timeout=600) as resp:
                 return json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
+            failures.append({"error": type(e).__name__, "http_status": e.code})
             detail = e.read().decode("utf-8", "replace")[:400]
             if e.code in (408, 429, 500, 502, 503, 504) and attempt < len(RETRY_WAITS):
                 print(f"  .. API error {e.code}, retrying in "
@@ -85,6 +104,7 @@ def post_json(url, payload, headers):
         except (http.client.IncompleteRead, http.client.HTTPException,
                 urllib.error.URLError, TimeoutError, ConnectionError,
                 json.JSONDecodeError) as e:
+            failures.append({"error": type(e).__name__})
             if attempt < len(RETRY_WAITS):
                 print(f"  .. connection dropped ({type(e).__name__}), "
                       f"retrying in {RETRY_WAITS[attempt]}s", flush=True)
@@ -96,19 +116,25 @@ def post_json(url, payload, headers):
 
 
 def call_model(args, key, prompt):
-    """Returns (text, tokens_in, tokens_out, model_echo)."""
+    """Returns (text, tokens_in, tokens_out, model_echo, completion_metadata)."""
+    failures = []
     if args.type == "gemini":
         data = post_json(
             f"https://generativelanguage.googleapis.com/v1beta/models/{args.model}:generateContent",
             {"contents": [{"parts": [{"text": prompt}]}]},
             {"x-goog-api-key": key},
+            failures,
         )
-        parts = data["candidates"][0]["content"]["parts"]
+        candidate = data["candidates"][0]
+        parts = (candidate.get("content") or {}).get("parts", [])
         text = "".join(p.get("text", "") for p in parts)
         u = data.get("usageMetadata", {})
         return text, u.get("promptTokenCount", 0), \
             u.get("candidatesTokenCount", 0) + u.get("thoughtsTokenCount", 0), \
-            data.get("modelVersion", "")
+            data.get("modelVersion", ""), \
+            {"finish_reason": candidate.get("finishReason"),
+             "response_id": data.get("responseId"),
+             "request_attempts": len(failures) + 1, "transport_errors": failures}
 
     if args.type == "openai":
         headers = {"Authorization": f"Bearer {key}"} if key else {}
@@ -116,11 +142,16 @@ def call_model(args, key, prompt):
             args.base_url.rstrip("/") + "/chat/completions",
             {"model": args.model, "messages": [{"role": "user", "content": prompt}]},
             headers,
+            failures,
         )
         u = data.get("usage", {})
-        return data["choices"][0]["message"]["content"], \
+        choice = data["choices"][0]
+        return (choice.get("message") or {}).get("content"), \
             u.get("prompt_tokens", 0), u.get("completion_tokens", 0), \
-            data.get("model", "")
+            data.get("model", ""), \
+            {"finish_reason": choice.get("finish_reason"),
+             "response_id": data.get("id"),
+             "request_attempts": len(failures) + 1, "transport_errors": failures}
 
     if args.type == "anthropic":
         data = post_json(
@@ -128,11 +159,15 @@ def call_model(args, key, prompt):
             {"model": args.model, "max_tokens": 16000,
              "messages": [{"role": "user", "content": prompt}]},
             {"x-api-key": key, "anthropic-version": "2023-06-01"},
+            failures,
         )
         text = "".join(b.get("text", "") for b in data["content"] if b.get("type") == "text")
         u = data.get("usage", {})
         return text, u.get("input_tokens", 0), u.get("output_tokens", 0), \
-            data.get("model", "")
+            data.get("model", ""), \
+            {"finish_reason": data.get("stop_reason"),
+             "response_id": data.get("id"),
+             "request_attempts": len(failures) + 1, "transport_errors": failures}
 
     sys.exit(f"Unknown --type: {args.type}")
 
@@ -175,43 +210,65 @@ def main():
     replies = {}
     meta = {}
     started = time.time()
+    output = Path(args.out)
     partial = Path(args.out + ".partial")
-    if partial.exists():
-        saved = json.loads(partial.read_text(encoding="utf-8"))
+    # Older clients also wrote final files containing blanks. Recover those
+    # without rerunning every already answered task or editing the saved replies.
+    resume_from = partial if partial.exists() else output
+    if resume_from.exists():
+        saved = json.loads(resume_from.read_text(encoding="utf-8-sig"))
         if saved.get("model") == args.model:
             replies = saved.get("replies", {})
             meta = saved.get("meta", {})
-            print(f"Resuming: {len(replies)} task(s) already answered "
-                  f"(from {partial.name}).")
+            answered = sum(has_answer(replies.get(p.stem)) for p in prompts)
+            if resume_from == output and answered == len(prompts):
+                print(f"{output.name} is already complete; no requests made. "
+                      "Use a different --out for a new run.")
+                return
+            print(f"Resuming: {answered}/{len(prompts)} task(s) already answered "
+                  f"(from {resume_from.name}); missing or blank tasks will be requested.")
         else:
-            print(f"Ignoring {partial.name}: it belongs to "
+            print(f"Ignoring {resume_from.name}: it belongs to "
                   f"{saved.get('model')!r}, not {args.model!r}.")
 
     for p in prompts:
         name = p.stem
-        if name in replies:
+        if has_answer(replies.get(name)):
             continue
         print(f"[{name}] asking {args.model} ...", flush=True)
         t0 = time.time()
+        request_started = datetime.now(timezone.utc).isoformat(timespec="seconds")
         task_prompt = p.read_text(encoding="utf-8")
-        text, tin, tout, echo = call_model(args, key, prompt_header(task_prompt) + task_prompt)
+        text, tin, tout, echo, completion = call_model(args, key, prompt_header(task_prompt) + task_prompt)
+        previous = meta.get(name, {})
+        history = list(previous.get("previous_attempts", []))
+        if name in replies:
+            history.append({"reply": replies[name],
+                            "receipt": {k: v for k, v in previous.items() if k != "previous_attempts"}})
         replies[name] = text
         meta[name] = {
-            "started": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+            "started": request_started,
             "seconds": round(time.time() - t0, 2),
             "tokens_in": tin,
             "tokens_out": tout,
             "model_echo": echo,
+            **completion,
+            "response_status": "answered" if has_answer(text) else "unresolved_blank",
         }
-        partial.write_text(json.dumps(
-            {"model": args.model, "replies": replies, "meta": meta}),
-            encoding="utf-8")
+        if history:
+            meta[name]["previous_attempts"] = history
+        save_progress(partial, args.model, replies, meta)
+        if not has_answer(text):
+            sys.exit(f"[{name}] No nonblank answer was returned. Run INCOMPLETE; "
+                     f"reply and receipt saved in {partial.name}. "
+                     "Rerun the same command to retry this task; completed tasks will be kept. "
+                     "No final submission was written.")
 
     tokens_in = sum(m.get("tokens_in", 0) for m in meta.values())
     tokens_out = sum(m.get("tokens_out", 0) for m in meta.values())
 
     submission = {
-        "client": 2,
+        "client": CLIENT_VERSION,
         "model": args.model,
         "effort": args.effort,
         "tokens_in": tokens_in,
@@ -220,7 +277,14 @@ def main():
         "meta": meta,
         "replies": replies,
     }
-    Path(args.out).write_text(json.dumps(submission), encoding="utf-8")
+    if output.exists():
+        # Keep the original file when repairing an older completed submission.
+        backup = output.with_name(output.name + ".before-resume-" +
+                                  datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ"))
+        with backup.open("xb") as file:
+            file.write(output.read_bytes())
+        print(f"Previous submission preserved in {backup.name}.")
+    output.write_text(json.dumps(submission), encoding="utf-8")
     partial.unlink(missing_ok=True)
     print()
     print(f"Wrote {args.out} ({tokens_in} tokens in, {tokens_out} out).")

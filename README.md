@@ -52,6 +52,35 @@ python client/deadline_client.py --type gemini --model gemini-2.5-flash --key-en
 Rules: one blind attempt per task, no test peeking (you can't - they're private),
 no hand-editing replies. Obviously hand-written "replies" get rejected.
 
+### Interrupted runs and blank replies
+
+Client version 3 stops with **INCOMPLETE** if a provider returns no text,
+whitespace, or an empty code block. It saves the reply and receipt in
+`submission.json.partial` and does not write a final submission. Connection
+failures still use the existing three retries; a returned blank answer requires
+an explicit resume instead of silently generating additional answers.
+
+Rerun the same command to resume. Valid saved responses, including explicit
+`# SKIP` / `// SKIP` answers, are kept. Missing and blank tasks are requested again.
+The client reads the partial checkpoint first, or an existing `--out` file if
+there is no checkpoint. This also repairs blank entries saved by older clients.
+An already complete output file makes no new requests; use a different `--out`
+filename for a new run.
+
+When repairing an existing output file, the client makes a byte-for-byte backup
+before replacing it. Earlier blank replies and receipts remain in each task's
+`previous_attempts`; new receipts also retain completion reasons, response IDs
+when supplied, and transport retry details. A replacement is a new generation,
+not recovery of the original answer, and its history must be retained for review.
+Top-level token totals describe the retained responses; previous-attempt usage is
+recorded separately, and usage from dropped connections may be unknown.
+
+Client regression checks (no API calls):
+
+```powershell
+python -m unittest discover -s client -p 'test_*.py' -v
+```
+
 ## Scores explained
 
 Scores are out of **100**, weighted by task difficulty and depth. The
