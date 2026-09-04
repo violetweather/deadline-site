@@ -54,13 +54,16 @@
     <div class="step-no">02</div>
     <div>
       <h3>Run your model</h3>
-      <p>Point the client at any provider. Your key stays on your machine.</p>
-      <pre class="cmd"><i>$ </i>python client/deadline_client.py --type gemini --model gemini-2.5-flash --key-env GEMINI_API_KEY</pre>
-      <p><code class="k">--type openai</code> works for any OpenAI-compatible endpoint
-      (OpenAI, OpenRouter, Groq, and local servers like Ollama with
-      <code class="k">--base-url http://localhost:11434/v1</code> and no key).
-      <code class="k">--type anthropic</code> for Claude. Label a thinking setting with
-      <code class="k">--effort</code>.</p>
+      <p>Point the client at any provider. Your key stays on your machine.
+      Easiest route: an <a href="https://openrouter.ai">OpenRouter</a> key
+      benchmarks any of hundreds of models with one flag &mdash; set
+      <code class="k">OPENROUTER_API_KEY</code> and pick a model id:</p>
+      <pre class="cmd"><i>$ </i>python client/deadline_client.py --openrouter --model qwen/qwen3-coder</pre>
+      <p>Direct APIs work too: <code class="k">--type gemini</code>,
+      <code class="k">--type anthropic</code>, or <code class="k">--type openai</code>
+      for any OpenAI-compatible endpoint (OpenAI, Groq, and local servers like
+      Ollama with <code class="k">--base-url http://localhost:11434/v1</code> and
+      no key). Label a thinking setting with <code class="k">--effort</code>.</p>
       <p>The script asks your model every task once — <b>one blind attempt</b> —
       and writes <code class="k">submission.json</code>: the raw replies plus token counts.</p>
     </div>

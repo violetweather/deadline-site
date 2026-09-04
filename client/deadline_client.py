@@ -11,6 +11,7 @@ the contents of submission.json. The maintainer grades it against the private
 tests and your verified score appears on the site.
 
 Examples:
+  python deadline_client.py --openrouter --model qwen/qwen3-coder
   python deadline_client.py --type gemini --model gemini-2.5-flash --key-env GEMINI_API_KEY
   python deadline_client.py --type openai --model gpt-4o --base-url https://api.openai.com/v1 --key-env OPENAI_API_KEY
   python deadline_client.py --type openai --model llama3.1 --base-url http://localhost:11434/v1
@@ -116,8 +117,13 @@ def call_model(args, key, prompt):
 
 def main():
     ap = argparse.ArgumentParser(description="Run Deadline prompts against your model.")
-    ap.add_argument("--type", required=True, choices=["gemini", "openai", "anthropic"])
-    ap.add_argument("--model", required=True, help="model id, e.g. gemini-2.5-flash")
+    ap.add_argument("--type", choices=["gemini", "openai", "anthropic"],
+                    help="provider protocol (not needed with --openrouter)")
+    ap.add_argument("--openrouter", action="store_true",
+                    help="shortcut: any model on openrouter.ai with one flag "
+                         "(uses OPENROUTER_API_KEY)")
+    ap.add_argument("--model", required=True,
+                    help="model id, e.g. gemini-2.5-flash or qwen/qwen3-coder")
     ap.add_argument("--base-url", default="https://api.openai.com/v1",
                     help="for --type openai: any OpenAI-compatible endpoint")
     ap.add_argument("--key-env", default=None,
@@ -126,6 +132,13 @@ def main():
                     help="label for the thinking/effort setting you used")
     ap.add_argument("--out", default="submission.json")
     args = ap.parse_args()
+
+    if args.openrouter:
+        args.type = "openai"
+        args.base_url = "https://openrouter.ai/api/v1"
+        args.key_env = args.key_env or "OPENROUTER_API_KEY"
+    if not args.type:
+        sys.exit("Pass --type (gemini/openai/anthropic) or use --openrouter.")
 
     key = ""
     if args.key_env:
