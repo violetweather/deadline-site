@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Doto:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
@@ -318,6 +318,7 @@ function detailHTML(r, cols) {
     </div>`;
   }).join("");
   return `<tr class="detail-tr" hidden><td colspan="${cols}"><div class="task-detail">
+    ${r.analysis ? `<p class="td-analysis">${esc(r.analysis)}</p>` : ""}
     ${r.commentary ? `<p class="td-comm">${esc(r.commentary)}</p>` : ""}${rows}
   </div></td></tr>`;
 }

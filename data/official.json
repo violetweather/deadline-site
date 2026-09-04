@@ -241,7 +241,8 @@
       "25_js_eval_traces": 1.0,
       "26_repo_bughunt": 1.0,
       "27_repo_bughunt_xl": 1.0
-    }
+    },
+    "analysis": "The effort experiment, part 1: at medium and high effort Opus solves the exact same 24 tasks and fails the same 3 with near-identical theory quality (d10: 33% vs 34% matched; the JS machine: 9% vs 7%). Extra thinking changed its pacing, not its capability. Its failures are the board's best near-misses - the sql_xl theory matched 66% of hidden cases."
   },
   {
     "task_detail": {
@@ -485,7 +486,8 @@
       "25_js_eval_traces": 1.0,
       "26_repo_bughunt": 1.0,
       "27_repo_bughunt_xl": 1.0
-    }
+    },
+    "analysis": "The effort experiment, part 2: identical solve-set and near-identical near-miss quality to its medium-effort sibling, for roughly the same wall-clock. On this task set, Opus 5's walls (cipher d10, sql_xl, the JS machine) are effort-proof: no amount of extra thinking cracks them."
   },
   {
     "task_detail": {
@@ -729,7 +731,8 @@
       "25_js_eval_traces": 1.0,
       "26_repo_bughunt": 1.0,
       "27_repo_bughunt_xl": 1.0
-    }
+    },
+    "analysis": "The cautious middle: it skipped the two JS tasks it judged hopeless (a skip costs 0; wrong code costs up to -15%) - correctly, it turned out - but still submitted five broken cipher/trace theories that matched only 14-28% of hidden cases. It holds 3rd on the strength of machine_traces and codec_traces_xl: tasks the model below it shipped broken."
   },
   {
     "task_detail": {
@@ -973,7 +976,8 @@
       "25_js_eval_traces": 0.0,
       "26_repo_bughunt": 1.0,
       "27_repo_bughunt_xl": 1.0
-    }
+    },
+    "analysis": "The sprinter: 27 tasks in ~10 minutes, under every wall-clock budget - its Time-DL equals its raw score, the only run with zero lateness. But the hard inference tasks got 11-44 seconds of 'thought' each and it shows: d6, d8, and d10 all confidently wrong at ~22% match, the midnight interpreter 0-for-6 groups. It skipped all three JS tasks. Speed multiplies correctness; it cannot replace it."
   },
   {
     "task_detail": {
@@ -1217,7 +1221,8 @@
       "25_js_eval_traces": 0.0,
       "26_repo_bughunt": 1.0,
       "27_repo_bughunt_xl": 1.0
-    }
+    },
+    "analysis": "The heartbreaker: its theories were among the best on the board - calendar_traces matched 98% of hidden cases, the ciphers 65-68% - but they almost never closed, and its 20KB midnight_machine interpreter crashes on every input (a parser bug emits an empty statement; the very first line of any program kills it). 100 points lost to one unshipped branch it never got to run: attempts are blind. Brilliant inference, unreliable shipping."
   },
   {
     "task_detail": {
@@ -1461,6 +1466,7 @@
       "25_js_eval_traces": 1.0,
       "26_repo_bughunt": 1.0,
       "27_repo_bughunt_xl": 1.0
-    }
+    },
+    "analysis": "Why is Sol below Sonnet? One byte. It passed both 20KB interpreters and two JS trace tasks (the first non-Claude to do either), and came closer to machine_traces_xl than any model ever (76% matched). But its codec_traces_xl answer reverse-engineered nearly the whole binary format and got the CHECKSUM formula wrong - one wrong trailing byte in every output, so every single test fails, examples included. A codec that emits bad checksums is worthless, so the full penalty stands: an ~80-raw-point swing, and the entire 3-point gap to 3rd place, on one formula."
   }
 ]

@@ -438,3 +438,6 @@ tr.click-row.open .chev { transform: rotate(90deg); }
 .td-note { color: var(--muted); }
 .td-note i { font-style: normal; opacity: 0.7; }
 @media (max-width: 720px) { .td-row { grid-template-columns: 1fr 70px; } .td-diff, .td-pts, .td-note { display: none; } }
+
+.td-analysis { font-family: var(--mono); font-size: 12px; line-height: 1.75; color: var(--ink); margin: 0 0 10px; padding: 10px 12px; border: 1px dashed var(--red); background: rgba(229, 72, 77, 0.04); }
+.td-analysis::before { content: 'POST-MORTEM // '; color: var(--red); font-weight: 700; letter-spacing: 2px; font-size: 10px; }
