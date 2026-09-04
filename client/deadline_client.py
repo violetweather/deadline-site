@@ -21,6 +21,7 @@ Standard library only. Python 3.9+.
 """
 
 import argparse
+import http.client
 import json
 import os
 import sys
@@ -59,18 +60,39 @@ def prompt_header(prompt_text):
     return PROMPT_HEADER_JS if "module.exports" in prompt_text else PROMPT_HEADER
 
 
+RETRY_WAITS = [5, 15, 30]
+
+
 def post_json(url, payload, headers):
-    req = urllib.request.Request(
-        url,
-        data=json.dumps(payload).encode("utf-8"),
-        headers={"Content-Type": "application/json", **headers},
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=300) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
-        body = e.read().decode("utf-8", "replace")[:400]
-        sys.exit(f"API error {e.code}: {body}")
+    """POST with retries: slow generations get cancelled/dropped mid-stream
+    by providers and proxies, so transient failures are retried, not fatal."""
+    body = json.dumps(payload).encode("utf-8")
+    for attempt in range(len(RETRY_WAITS) + 1):
+        req = urllib.request.Request(
+            url, data=body,
+            headers={"Content-Type": "application/json", **headers})
+        try:
+            with urllib.request.urlopen(req, timeout=600) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except urllib.error.HTTPError as e:
+            detail = e.read().decode("utf-8", "replace")[:400]
+            if e.code in (408, 429, 500, 502, 503, 504) and attempt < len(RETRY_WAITS):
+                print(f"  .. API error {e.code}, retrying in "
+                      f"{RETRY_WAITS[attempt]}s", flush=True)
+                time.sleep(RETRY_WAITS[attempt])
+                continue
+            sys.exit(f"API error {e.code}: {detail}")
+        except (http.client.IncompleteRead, http.client.HTTPException,
+                urllib.error.URLError, TimeoutError, ConnectionError,
+                json.JSONDecodeError) as e:
+            if attempt < len(RETRY_WAITS):
+                print(f"  .. connection dropped ({type(e).__name__}), "
+                      f"retrying in {RETRY_WAITS[attempt]}s", flush=True)
+                time.sleep(RETRY_WAITS[attempt])
+                continue
+            sys.exit(f"Connection kept failing ({type(e).__name__}: "
+                     f"{str(e)[:200]}). Progress so far is saved - rerun the "
+                     f"same command to resume.")
 
 
 def call_model(args, key, prompt):
@@ -152,10 +174,23 @@ def main():
 
     replies = {}
     meta = {}
-    tokens_in = tokens_out = 0
     started = time.time()
+    partial = Path(args.out + ".partial")
+    if partial.exists():
+        saved = json.loads(partial.read_text(encoding="utf-8"))
+        if saved.get("model") == args.model:
+            replies = saved.get("replies", {})
+            meta = saved.get("meta", {})
+            print(f"Resuming: {len(replies)} task(s) already answered "
+                  f"(from {partial.name}).")
+        else:
+            print(f"Ignoring {partial.name}: it belongs to "
+                  f"{saved.get('model')!r}, not {args.model!r}.")
+
     for p in prompts:
         name = p.stem
+        if name in replies:
+            continue
         print(f"[{name}] asking {args.model} ...", flush=True)
         t0 = time.time()
         task_prompt = p.read_text(encoding="utf-8")
@@ -168,8 +203,12 @@ def main():
             "tokens_out": tout,
             "model_echo": echo,
         }
-        tokens_in += tin
-        tokens_out += tout
+        partial.write_text(json.dumps(
+            {"model": args.model, "replies": replies, "meta": meta}),
+            encoding="utf-8")
+
+    tokens_in = sum(m.get("tokens_in", 0) for m in meta.values())
+    tokens_out = sum(m.get("tokens_out", 0) for m in meta.values())
 
     submission = {
         "client": 2,
@@ -182,6 +221,7 @@ def main():
         "replies": replies,
     }
     Path(args.out).write_text(json.dumps(submission), encoding="utf-8")
+    partial.unlink(missing_ok=True)
     print()
     print(f"Wrote {args.out} ({tokens_in} tokens in, {tokens_out} out).")
     print("Open a 'Verified benchmark submission' issue on the site repo and")
