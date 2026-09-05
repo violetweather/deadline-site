@@ -57,7 +57,7 @@ class Element {
   evaluate('source = "community"; render()');
   assert.equal(evaluate('filtered().length'), 1);
   evaluate('source = "all"; metric = "cost"; render()');
-  assert.ok(elements.get('t-subs').innerHTML.includes('settings were not independently verified'));
+  assert.ok(elements.get('t-subs').innerHTML.includes('settings not independently verified'));
   assert.equal(evaluate('stampOf({official:true})'), '<span class="stamp official">Official</span>');
   assert.ok(elements.get('t-subs').innerHTML.includes('>TIME-DL</th>'));
   assert.ok(!elements.get('t-subs').innerHTML.includes('Time-DL (unverified)'));

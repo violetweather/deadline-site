@@ -377,7 +377,7 @@
       "effort": "medium"
     },
     "regraded_from": "20260903-175141",
-    "analysis": "Opus medium fully passes 24 of 26 scored tasks. The remaining gaps are the deepest cipher (3.41% task credit) and the larger SQL report (20.90%). Regrading raises correctness from 83.9 to 86.11 by recognizing that limited partial correctness. The 0.09-point gap to high effort comes entirely from the cipher answer; the full-pass pattern is identical.",
+    "analysis": "Fully passes everything except the deepest cipher and the large SQL report, which keep only small partial credit. The pass pattern is identical to Opus high; the two entries differ only on the cipher answer.",
     "tdl_score_unrounded": 83.34808477115224,
     "tdl_missing_tasks": [
       "01_cipher_d2"
@@ -769,7 +769,7 @@
       "effort": "high"
     },
     "regraded_from": "20260903-175143",
-    "analysis": "Opus high fully passes the same 24 tasks as medium. It earns slightly more credit on the deepest cipher (4.31% versus 3.41%), while both answers earn 20.90% on the larger SQL report. That produces 86.20 versus 86.11 overall. This small difference between saved answers does not establish a repeatable effort advantage.",
+    "analysis": "Same pass pattern as Opus medium. The 0.09-point lead comes from a slightly better deep-cipher answer. One saved answer per task cannot show a real effort advantage.",
     "tdl_score_unrounded": 84.06239545245445,
     "tdl_missing_tasks": [
       "01_cipher_d2"
@@ -1161,7 +1161,7 @@
       "effort": "high"
     },
     "regraded_from": "20260903-175145",
-    "analysis": "Sonnet still fully passes 19 tasks. Its interpreter falls short at the call-depth boundary and earns 89.39% task credit; the larger state machine earns 36.70%, and the larger SQL report earns 6.39%. The revised rule raises its overall score from 64.1 to 68.21 mainly by recognizing partial state-machine behavior. It remains behind Sol xhigh's 72.77 on these saved answers.",
+    "analysis": "The deep ciphers are the main loss: three wrong submissions take negative credit, and one JavaScript task was skipped. The interpreter misses only its call-depth boundary; the large state machine and SQL report are mostly incomplete.",
     "tdl_score_unrounded": 66.5192938850005,
     "tdl_missing_tasks": [
       "01_cipher_d2"
@@ -1553,7 +1553,7 @@
       "effort": "high"
     },
     "regraded_from": "20260903-182019",
-    "analysis": "Gemini fully passes 18 tasks, but its interpreter earns little credit and the larger state machine times out in Docker. The larger SQL answer earns 31.32% partial credit. Correctness rises from 51.3 to 54.51 under the continuous rule; it remains below Sol medium at 59.65 and Sol xhigh at 72.77. Its short archived answer intervals produce no additional TIME-DL discount.",
+    "analysis": "Wrong code on five tasks drives the loss: the three deep ciphers, the interpreter, and the large state machine, which times out in Docker. Two JavaScript tasks were declared skips. What remains passes cleanly.",
     "tdl_score_unrounded": 54.51162029883817,
     "tdl_missing_tasks": [
       "01_cipher_d2"
@@ -1945,7 +1945,7 @@
       "effort": "xhigh"
     },
     "regraded_from": "20260903-191850",
-    "analysis": "Luna's jump from 36.9 to 52.61 comes from correcting the old scoring cliff, not from gaining full task passes. Its evaluator and calendar earn 98.92% and 97.34% task credit where the previous group gate gave essentially zero. Partial cipher and state-machine behavior also counts. It still fully passes 15 tasks, loses most interpreter credit, and times out on the redacted interpreter.",
+    "analysis": "Few clean passes but many near-misses: the evaluator and calendar answers are each over 97% correct without passing. The interpreters fail to run and two JavaScript tasks were skipped. Its old 36.9 score came from a rule that gave near-misses zero.",
     "tdl_score_unrounded": 51.300880019312,
     "tdl_missing_tasks": [
       "01_cipher_d2"
@@ -2337,7 +2337,7 @@
       "effort": "xhigh"
     },
     "regraded_from": "20260903-205222",
-    "analysis": "Sol xhigh fully passes 19 tasks and now receives credit for substantial behavior that the old group gate discarded: 75.40% on the smaller inferred state machine and 84.40% on the larger one. Together with partial cipher and SQL answers, this raises correctness from 59.8 to 72.77. The larger codec still fails all checks and retains the full negative penalty.",
+    "analysis": "The strongest GPT entry. Its inferred state machines are largely right without fully passing, and it attempts every task. Only the large codec is truly wrong: it fails every check and takes the full penalty.",
     "tdl_score_unrounded": 72.7666795795693,
     "tdl_missing_tasks": [
       "01_cipher_d2"
@@ -2729,7 +2729,7 @@
       "effort": "medium"
     },
     "regraded_from": "20260903-213824",
-    "analysis": "Sol medium fully passes 17 tasks. Its evaluator earns 90.64% task credit and its larger state machine earns 40.17%, lifting correctness from 49.9 to 59.65 under the continuous rule. The redacted interpreter still fails to complete execution, and the skipped JavaScript tasks remain zero. These saved answers score 13.12 points below Sol xhigh.",
+    "analysis": "Against Sol xhigh, this run skips both JavaScript tasks and submits a redacted interpreter that does not run. The evaluator and large state machine earn substantial partial credit.",
     "tdl_score_unrounded": 59.64971536407759,
     "tdl_missing_tasks": [
       "01_cipher_d2"

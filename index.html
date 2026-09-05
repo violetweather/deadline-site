@@ -319,13 +319,9 @@ function modeOf(r) {
 
 function measurementDetailsHTML(r) {
   return `<p class="td-meta">Full-pass points: ${fmtScore(r.strict_score)}/100. Grader: ${esc(r.benchmark_version || "legacy")} / ${esc((r.suite_hash || "unrecorded").slice(0,12))}.
-    ${r.samples || 1} saved attempt(s) per task; regrading adds no new attempts.
-    ${(r.samples || 1) === 1 ? "Repeat variation is unmeasured." : "Displayed spread is repeat standard deviation."}
-    ${r.settings_verified ? "Generation settings verified." : "Generation settings were not independently verified."}</p>` +
-    (r.tdl_score != null ? `<p class="td-meta">TIME-DL uses original answer-file intervals with current task credit.
-      These intervals are not verified inference latency. ${(r.tdl_missing_tasks || []).length} scored task(s)
-      lack a usable interval and receive no time discount, following the original convention.
-      This can overestimate TIME-DL. Time is the sum of recorded answer intervals.</p>` : "");
+    ${(r.samples || 1) === 1 ? "Single sample; repeat spread unmeasured." : `${r.samples} attempts per task; spread is repeat standard deviation.`}
+    ${r.settings_verified ? "Generation settings verified." : "Generation settings not independently verified."}</p>` +
+    (r.tdl_score != null ? `<p class="td-meta">TIME-DL is a descriptive estimate from saved answer timestamps, not measured latency.${(r.tdl_missing_tasks || []).length ? ` ${(r.tdl_missing_tasks || []).length} task(s) have no usable interval and get no time discount, which can overstate it.` : ""}</p>` : "");
 }
 
 function detailHTML(r, cols) {
