@@ -5,10 +5,10 @@
 A closed coding benchmark for AI models. 27 MACHINE-GENERATED Python, JavaScript, and SQL tasks (nearly half pure inference from observed behavior) —
 hidden cipher pipelines, randomized state machines and formats, scrambled
 precedence tables, performance gates, and a generated-semantics interpreter —
-graded by hidden, fuzz-tested oracles with partial credit per test group.
+graded by hidden, fuzz-tested oracles with semantic-balanced partial credit.
 No judge model, no self-reported scores. Every task carries a TOKEN BUDGET
-(its deadline); the headline DL Score is correctness times timeliness, so
-correct-but-bloated loses to correct-and-lean. Official runs also report a
+(its deadline). Correctness is the headline; Token Deadline Score separately
+measures correctness discounted by token usage. Official runs also report a
 strict all-attempts-must-pass score.
 
 **Scope, honestly:** Deadline measures exact Python 3, JavaScript (Node), and SQLite SQL with
@@ -88,13 +88,13 @@ Scores are out of **100**, weighted by task difficulty and depth. The
 budget÷tokens past the deadline. Runs without per-task token data
 (subscriptions, agent mode) get a raw score only.
 
-- **Official**: runs executed end to end by the maintainer, averaged over
-  3 attempts per task and shown with an error bar (±).
-- **Community**: replies submitted by users, graded by the maintainer
-  (single attempt each). The site shows only the AVERAGE of all verified
-  submissions per model — individual submissions and usernames are never
-  displayed. Scores are verified; token counts, cost, and time are averages
-  of client-reported numbers.
+- **Official**: maintainer-run generations. New certified runs require at least
+  three independent attempts per task. Historical entries may have one attempt;
+  regrades retain that count. Repeat standard deviation is not a confidence interval.
+- **Community**: submitted answers are graded privately. Only complete, isolated
+  results with matching versions are averaged. Model attribution, effort and usage
+  remain client reported; multiple submissions do not prove independent attempts.
+  Individual submissions and usernames are not displayed.
 
 Costs are computed from token counts using [`prices.json`](prices.json)
 (USD per million tokens). Corrections to prices are welcome as PRs.
@@ -105,3 +105,54 @@ Every prompt carries the canary GUID `d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a`.
 If this string ever shows up in a model's unprompted output or a training
 corpus, the task set has leaked and will be rotated. Please do not train
 on this repository.
+
+## Deadline 3.4 private-grader revision
+
+The public prompts, client version 3 and submission JSON envelope are unchanged.
+Saved answers can be regraded without calling the models again. The grader scores
+26 tasks (1,205 points); task 24 remains unscored because its prompt omits required
+final-state labels. Its answer does not affect the score.
+
+A private controller compares typed returned values against expected answers kept
+outside Docker containers. The private suite includes independent expected-result
+checks, targeted contract cases, and deterministic generated cases. Deliberately
+broken solutions and independent correct alternatives check the grader itself.
+
+Valid completed answers earn q^2 - 0.15 * (1-q)^2 task credit, where q is the matched
+fraction balanced across reviewed semantic areas within each function, then across
+functions. SQL balances empty/nonempty result classes. Repeated identical inputs
+cannot multiply credit. Every case must pass for full credit. This replaces the
+old requirement to fully pass a test group before receiving any positive credit.
+Invalid execution receives -15%; explicit skips receive zero; unresolved blanks
+remain incomplete. Token discounts affect positive credit only.
+
+The headline retains the published task points and displays two decimals.
+Expanded rows contain a model-specific post-mortem, full-pass points, measurement
+details and task credits. The downloadable result data also contains equal-task,
+equal-family and one-family-omission comparisons. These alternatives describe the influence of
+task selection, not statistical confidence. The nine families are cipher, state
+machine, codec, calendar, expression, pair counting, interpreter, SQL and repository
+repair. Equal-family scoring weights each family equally and its tasks equally.
+
+Versioned regrades preserve original provenance and sample counts. Current official
+saved answers were generated under their original scoring instructions; regrading
+does not simulate new generations under revised scoring incentives. The current
+saved generations have n=1; repeat variation is unmeasured. Effort labels and model
+settings are not independently verified. A higher score on these tasks is not a
+claim about overall model capability. Scores from different versions or hashes
+must not be pooled. Expanded rows show each task's contribution.
+
+TIME-DL uses the new task credits and the original saved answer-file intervals.
+Time budgets are 60/120/240/450 seconds for medium/hard/brutal/nightmare tasks.
+Missing or zero intervals receive no discount, following the original convention;
+negative credit is never discounted. File intervals do not establish inference
+latency, so TIME-DL remains a descriptive estimate and correctness determines
+the agent leaderboard order. Timing coverage is shown inside expanded rows.
+Community usage remains client reported. The existing
+client's `--effort` flag labels a setting but does not configure it.
+
+Public results rendering checks (no browser, network or model calls):
+
+```powershell
+node tests/leaderboard.test.cjs
+```

@@ -2,8 +2,11 @@
   "01_cipher_d2": {
     "difficulty": "medium",
     "points": 10,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 1250,
     "category": "write",
+    "family": "cipher",
     "tags": [
       "inference"
     ]
@@ -11,8 +14,11 @@
   "02_cipher_d4": {
     "difficulty": "hard",
     "points": 20,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 2500,
     "category": "write",
+    "family": "cipher",
     "tags": [
       "inference"
     ]
@@ -20,8 +26,11 @@
   "03_cipher_d6": {
     "difficulty": "brutal",
     "points": 35,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 5000,
     "category": "write",
+    "family": "cipher",
     "tags": [
       "inference"
     ]
@@ -29,8 +38,11 @@
   "04_cipher_d8": {
     "difficulty": "nightmare",
     "points": 70,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 10000,
     "category": "write",
+    "family": "cipher",
     "tags": [
       "inference"
     ]
@@ -38,8 +50,11 @@
   "05_cipher_d10": {
     "difficulty": "nightmare",
     "points": 120,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 10000,
     "category": "write",
+    "family": "cipher",
     "tags": [
       "inference"
     ]
@@ -47,8 +62,11 @@
   "06_machine_a": {
     "difficulty": "medium",
     "points": 15,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 1250,
     "category": "write",
+    "family": "state machine",
     "tags": [
       "state",
       "spec"
@@ -57,8 +75,11 @@
   "07_machine_traces": {
     "difficulty": "hard",
     "points": 30,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 2500,
     "category": "write",
+    "family": "state machine",
     "tags": [
       "inference",
       "state"
@@ -67,8 +88,11 @@
   "08_codec_a": {
     "difficulty": "medium",
     "points": 15,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 1250,
     "category": "write",
+    "family": "codec",
     "tags": [
       "parsing",
       "numerics"
@@ -77,8 +101,11 @@
   "09_codec_traces": {
     "difficulty": "brutal",
     "points": 40,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 5000,
     "category": "write",
+    "family": "codec",
     "tags": [
       "inference",
       "parsing"
@@ -87,8 +114,11 @@
   "10_strange_calendar": {
     "difficulty": "hard",
     "points": 20,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 2500,
     "category": "write",
+    "family": "calendar",
     "tags": [
       "numerics",
       "algorithms"
@@ -97,8 +127,11 @@
   "11_eval_a": {
     "difficulty": "hard",
     "points": 20,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 2500,
     "category": "write",
+    "family": "expression",
     "tags": [
       "parsing",
       "spec"
@@ -107,8 +140,11 @@
   "12_eval_traces": {
     "difficulty": "brutal",
     "points": 40,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 5000,
     "category": "write",
+    "family": "expression",
     "tags": [
       "inference",
       "parsing"
@@ -117,8 +153,11 @@
   "13_pairs_a": {
     "difficulty": "brutal",
     "points": 25,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 5000,
     "category": "write",
+    "family": "pair counting",
     "tags": [
       "performance",
       "algorithms"
@@ -127,8 +166,11 @@
   "14_pairs_traces": {
     "difficulty": "brutal",
     "points": 40,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 5000,
     "category": "write",
+    "family": "pair counting",
     "tags": [
       "inference",
       "performance"
@@ -137,8 +179,11 @@
   "15_midnight_machine": {
     "difficulty": "nightmare",
     "points": 100,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 10000,
     "category": "write",
+    "family": "interpreter",
     "tags": [
       "parsing",
       "state"
@@ -147,8 +192,11 @@
   "16_calendar_traces": {
     "difficulty": "brutal",
     "points": 45,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 5000,
     "category": "write",
+    "family": "calendar",
     "tags": [
       "inference",
       "numerics"
@@ -157,8 +205,11 @@
   "17_machine_traces_xl": {
     "difficulty": "nightmare",
     "points": 70,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 10000,
     "category": "write",
+    "family": "state machine",
     "tags": [
       "inference",
       "state"
@@ -167,8 +218,11 @@
   "18_codec_traces_xl": {
     "difficulty": "nightmare",
     "points": 70,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 10000,
     "category": "write",
+    "family": "codec",
     "tags": [
       "inference",
       "parsing"
@@ -177,8 +231,11 @@
   "19_redacted_machine": {
     "difficulty": "nightmare",
     "points": 90,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 10000,
     "category": "write",
+    "family": "interpreter",
     "tags": [
       "inference",
       "parsing",
@@ -188,8 +245,11 @@
   "20_sql_report": {
     "difficulty": "hard",
     "points": 20,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 2500,
     "category": "write",
+    "family": "SQL",
     "tags": [
       "sql",
       "spec"
@@ -198,8 +258,11 @@
   "21_sql_traces": {
     "difficulty": "brutal",
     "points": 45,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 5000,
     "category": "write",
+    "family": "SQL",
     "tags": [
       "sql",
       "inference"
@@ -208,8 +271,11 @@
   "22_sql_traces_xl": {
     "difficulty": "nightmare",
     "points": 65,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 10000,
     "category": "write",
+    "family": "SQL",
     "tags": [
       "sql",
       "inference"
@@ -218,8 +284,11 @@
   "23_js_cipher_traces": {
     "difficulty": "hard",
     "points": 35,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 2500,
     "category": "js-inference",
+    "family": "cipher",
     "tags": [
       "js",
       "inference"
@@ -227,9 +296,12 @@
   },
   "24_js_machine_traces": {
     "difficulty": "brutal",
-    "points": 45,
+    "points": 0,
+    "scored": false,
+    "unscored_reason": "Required final-state labels are absent from the unchanged public prompt.",
     "budget": 5000,
     "category": "js-inference",
+    "family": "unscored",
     "tags": [
       "js",
       "inference",
@@ -239,8 +311,11 @@
   "25_js_eval_traces": {
     "difficulty": "brutal",
     "points": 45,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 5000,
     "category": "js-inference",
+    "family": "expression",
     "tags": [
       "js",
       "inference",
@@ -250,8 +325,11 @@
   "26_repo_bughunt": {
     "difficulty": "brutal",
     "points": 50,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 5000,
     "category": "repo-bughunt",
+    "family": "repository repair",
     "tags": [
       "repo",
       "navigation",
@@ -261,8 +339,11 @@
   "27_repo_bughunt_xl": {
     "difficulty": "nightmare",
     "points": 70,
+    "scored": true,
+    "unscored_reason": null,
     "budget": 10000,
     "category": "repo-bughunt",
+    "family": "repository repair",
     "tags": [
       "repo",
       "navigation",

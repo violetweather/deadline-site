@@ -18,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Doto:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
@@ -43,10 +43,9 @@
     </div>
 
     <div class="hero-row">
-      <p class="sub"><b>27 machine-generated coding tasks. Hidden fuzz-tested graders.</b>
-      No judge model, no self-reported scores, no benchmark leakage.
-      Official runs are averaged over three attempts; community results are
-      re-graded from raw replies and shown only as per-model averages.</p>
+      <p class="sub"><b>27 public coding tasks. Private, machine-graded results.</b>
+      Deadline 3.4 regrades saved answers on 26 tasks with balanced semantic coverage and continuous partial credit.
+      Current official results have one attempt per task. Small score differences do not establish which model is better.</p>
       <div class="flapclock">
         <div class="fc-label">T-minus · midnight local</div>
         <div class="fc-cells" id="fc-cells" role="timer" aria-label="time left today"></div>
@@ -92,6 +91,7 @@
     <button class="chip" data-source="community">Community</button>
     <span class="gap"></span>
     <select id="f-effort" aria-label="filter by effort"><option value="all">All efforts</option></select>
+    <select id="f-cohort" aria-label="Grading version"></select>
     <span class="legend" id="legend"></span>
   </div>
 
@@ -106,14 +106,25 @@
   </div>
 
   <div class="panel">
-    <div class="panel-head">Subscription / agent runs &mdash; wall-clock deadlines</div>
+    <div class="panel-head">Subscription / agent runs &mdash; correctness</div>
     <div class="panel-body chart-scroll"><table id="t-subs"></table></div>
   </div>
 
   <footer>
-    <b>OFFICIAL</b> runs are executed end to end by the maintainer, three attempts per task, shown with ± spread.
-    <b>COMMUNITY</b> results are submitted as raw model replies and re-graded against the private test suite, so scores cannot be faked. The site shows only the per-model average of all verified submissions — never individual results; token counts, cost, and time are averages of what submitters' clients reported. A community average wears &#10003; once at least two independent submissions agree; &#10007; means it still rests on a single submission.
-    Scores are out of 100, weighted by task difficulty. The <b>DL SCORE</b> is the headline: every task carries a token budget — its deadline — and a solved task's points decay by budget&divide;tokens when the model blows past it. Correct but bloated loses to correct and lean. Runs without per-task token metering (subscriptions, agent mode) live on their own <b>SUBSCRIPTION / AGENT</b> board and carry a <b>TIME-DL</b> score instead — the same deadline idea with wall-clock budgets per task, from answer timestamps. The two boards are not directly comparable: API runs pay in tokens, agent runs pay in time. Costs use <a href="https://github.com/violetweather/deadline-site/blob/main/prices.json">prices.json</a> (USD per million tokens).
+    <b>VERSIONS</b> &mdash; Each result identifies its grading version. Deadline 3.4
+    keeps all public prompts and the submission format, but excludes <code>24_js_machine_traces</code>
+    from scoring because required state labels were not supplied. The 26 scored tasks total 1,205 points.
+    Scores from different versions are not directly comparable. Correctness is the headline;
+    token efficiency is separate. Version 3.4 balances semantic areas and applies continuous signed credit,
+    including negative penalties. Unresolved blank replies remain incomplete.
+    <b>OFFICIAL</b> identifies maintainer-run generations; existing entries have one attempt unless stated otherwise.
+    A regrade reuses the same answer and does not add an independent sample. New certified runs require three attempts.
+    Any displayed spread is repeat standard deviation, not a confidence interval.
+    <b>COMMUNITY</b> answers are privately graded; model identity, effort settings and usage remain client reported.
+    <b>MEASUREMENTS</b> &mdash; DL Score requires complete token measurements. Answer-file timestamps
+    do not establish inference latency. TIME-DL uses archived answer intervals as a descriptive estimate;
+    its timing coverage and assumptions are available in each expanded row. Agent rows rank by correctness.
+    Local regrades awaiting isolation remain private. See <a href="how.html">methodology and limitations</a>.
     <b>SCOPE</b> &mdash; Deadline measures exact Python 3, JavaScript (Node), and SQLite SQL with standard libraries only, across 27 machine-generated tasks — most reverse-engineered from the observed behavior of hidden systems — in one blind attempt against token deadlines. Two tasks are whole-project bug hunts across dozens of generated files. It does not measure dependency wrangling or long agentic sessions.
     <span class="canary">canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a — benchmark data, do not train on it.</span>
   </footer>
@@ -149,7 +160,10 @@ function family(model) {
   for (const [re, color, name] of FAMILIES) if (re.test(model)) return { color, name };
   return { color: "var(--c-other)", name: "Other" };
 }
-const scoreOf = r => r.score != null ? r.score : Math.round(100 * r.passed / (r.total || 1));
+const scoreOf = r => Number.isFinite(r.score) ? r.score : null;
+const preciseScore = r => r.score_analysis?.score_unrounded ?? scoreOf(r);
+const fmtScore = n => Number.isFinite(n) ? n.toFixed(2) : "—";
+const cohortOf = r => `${r.benchmark_version || "legacy"}/${r.suite_hash || "unrecorded"}`;
 const fmtCount = n => new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(n);
 
 const METRICS = {
@@ -179,7 +193,9 @@ function runCost(r) {
 
 function filtered() {
   const eff = document.getElementById("f-effort").value;
-  return RUNS.filter(r =>
+  const cohort = document.getElementById("f-cohort").value;
+  return RUNS.filter(r => scoreOf(r) !== null && r.measurement_status !== "incomplete" &&
+    cohortOf(r) === cohort &&
     (source === "all" || (source === "official") === !!r.official) &&
     (eff === "all" || r.effort === eff));
 }
@@ -196,7 +212,7 @@ function heroStats() {
   const dates = RUNS.map(r => r.when || "").sort();
   const last = dates[dates.length - 1];
   document.getElementById("meta-line").textContent =
-    "27 MACHINE-GENERATED TASKS (PYTHON + JAVASCRIPT + SQL), MOSTLY PURE INFERENCE / OUT OF 100 WITH TOKEN DEADLINES / PARTIAL CREDIT PER TEST GROUP / OFFICIAL RUNS AVERAGE 3 ATTEMPTS" +
+    "27 PUBLIC TASKS / 26 SCORED / CORRECTNESS OUT OF 100 / SAVED ANSWERS REGRADED IN DOCKER / SEE EACH ROW FOR SAMPLE COUNT" +
     (last ? ` / UPDATED ${last.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")}` : "");
 }
 
@@ -267,13 +283,12 @@ function frontier(runs) {
     const errTxt = err ? ` ±${err}` : "";
     const srcTxt = r.official
       ? `Official run · ${r.samples || 1} attempt(s) per task`
-      : `Community average of ${fmtCount(r.samples || 1)} submission(s)` +
-        ((r.samples || 1) < 2 ? " · UNCONFIRMED until a second submission agrees" : "");
-    const strictTxt = (r.samples || 1) > 1 && r.strict_score != null && r.strict_score !== sc
-      ? `<br>Strict (all attempts must pass): ${Math.round(r.strict_score * 10) / 10}/100` : "";
+      : `Community · ${fmtCount(r.samples || 1)} submission(s); identity and independence unverified`;
+    const strictTxt = r.strict_score != null
+      ? `<br>Full-pass points (all attempts): ${fmtScore(r.strict_score)}/100` : "";
     const dlTxt = r.dscore != null ? `<br>DL Score (within token deadlines): ${r.dscore}/100` : "";
     const tip = `<b>${esc(r.model)}</b> <span style="opacity:.7">${esc(r.effort)}</span><br>` +
-      `Score: ${sc}/100${errTxt}${dlTxt}${strictTxt}<br>${M.label}: ${M.fmt(v)}<br>${srcTxt}`;
+      `Score: ${fmtScore(sc)}/100${errTxt}${dlTxt}${strictTxt}<br>${M.label}: ${M.fmt(v)}<br>${srcTxt}`;
     svg += `<g class="pt">`;
     svg += `<line class="drop" x1="${L}" y1="${py}" x2="${px}" y2="${py}"/>`;
     svg += `<line class="drop" x1="${px}" y1="${py}" x2="${px}" y2="${y(0)}"/>`;
@@ -288,7 +303,7 @@ function frontier(runs) {
       ? `<circle data-tip="${esc(tip)}" cx="${px}" cy="${py}" r="6.5" fill="${f.color}" stroke="var(--surface)" stroke-width="2"/>`
       : `<circle data-tip="${esc(tip)}" cx="${px}" cy="${py}" r="5.5" fill="var(--surface)" stroke="${f.color}" stroke-width="2.5"/>`;
     svg += `<text class="mlabel" x="${px + 12}" y="${py - 4}" fill="${f.color}">${esc(r.model).slice(0, 26)}</text>`;
-    svg += `<text class="tag" x="${px + 12}" y="${py + 8}" fill="var(--muted)">${esc(r.effort.toUpperCase()).slice(0, 12)}${r.official ? "" : ` · CMTY <tspan fill="${(r.samples || 1) < 2 ? "var(--red)" : "var(--ink-2)"}">${(r.samples || 1) < 2 ? "✗" : "✓"}</tspan>`}</text>`;
+    svg += `<text class="tag" x="${px + 12}" y="${py + 8}" fill="var(--muted)">${esc(r.effort.toUpperCase()).slice(0, 12)}${r.official ? "" : ` / CMTY N=${r.samples || 1}`}</text>`;
     svg += `</g>`;
   });
   svg += `</svg>`;
@@ -300,26 +315,40 @@ function modeOf(r) {
   return r.mode || (r.tokens_out || r.cost_usd != null ? "api" : "sub");
 }
 
+function measurementDetailsHTML(r) {
+  return `<p class="td-meta">Full-pass points: ${fmtScore(r.strict_score)}/100. Grader: ${esc(r.benchmark_version || "legacy")} / ${esc((r.suite_hash || "unrecorded").slice(0,12))}.
+    ${r.samples || 1} saved attempt(s) per task; regrading adds no new attempts.
+    ${(r.samples || 1) === 1 ? "Repeat variation is unmeasured." : "Displayed spread is repeat standard deviation."}
+    ${r.settings_verified ? "Generation settings verified." : "Generation settings were not independently verified."}</p>` +
+    (r.tdl_score != null ? `<p class="td-meta">TIME-DL uses original answer-file intervals with current task credit.
+      These intervals are not verified inference latency. ${(r.tdl_missing_tasks || []).length} scored task(s)
+      lack a usable interval and receive no time discount, following the original convention.
+      This can overestimate TIME-DL. Time is the sum of recorded answer intervals.</p>` : "");
+}
+
 function detailHTML(r, cols) {
   if (!r.task_detail) return "";
   const rows = Object.entries(r.task_detail).map(([t, d]) => {
     let v, cls;
-    if (d.credit >= 1) { v = "PASS"; cls = "ok"; }
-    else if (d.credit > 0) { v = `PART ${Math.round(d.credit * 100)}%`; cls = "part"; }
+    if (d.scored === false) { v = "UNSCORED"; cls = "skip"; }
+    else if (d.credit == null) { v = "INCOMPLETE"; cls = "skip"; }
+    else if (d.credit >= 1) { v = "PASS"; cls = "ok"; }
+    else if (d.credit > 0) { v = `PART ${Math.min(99.99, d.credit * 100).toFixed(2)}%`; cls = "part"; }
     else if (d.credit < 0) { v = `WRONG ${Math.round(d.credit * 1000) / 10}%`; cls = "bad"; }
     else if ((d.note || "").toLowerCase().includes("skip")) { v = "SKIP"; cls = "skip"; }
     else { v = "FAIL"; cls = "bad"; }
     return `<div class="td-row">
       <span class="td-name">${esc(t)}</span>
       <span class="td-diff ${esc(d.difficulty)}">${esc(d.difficulty)}</span>
-      <span class="td-pts">${d.points} pts</span>
+      <span class="td-pts" title="Task maximum: ${d.points} points">${fmtScore(d.contribution)} /100</span>
       <span class="td-verdict ${cls}">${v}</span>
       <span class="td-note">${esc(d.note || "")}${d.seconds ? ` <i>[${Math.round(d.seconds)}s]</i>` : ""}</span>
     </div>`;
   }).join("");
   return `<tr class="detail-tr" hidden><td colspan="${cols}"><div class="task-detail">
     ${r.analysis ? `<p class="td-analysis">${esc(r.analysis)}</p>` : ""}
-    ${r.commentary ? `<p class="td-comm">${esc(r.commentary)}</p>` : ""}${rows}
+    ${r.commentary ? `<p class="td-comm">${esc(r.commentary)}</p>` : ""}
+    ${measurementDetailsHTML(r)}${rows}
   </div></td></tr>`;
 }
 
@@ -331,18 +360,15 @@ function wireDetails(tableEl) {
     if (det && det.classList.contains("detail-tr")) {
       det.hidden = !det.hidden;
       tr.classList.toggle("open", !det.hidden);
+      tr.querySelector("button")?.setAttribute("aria-expanded", String(!det.hidden));
     }
   });
 }
 
 function stampOf(r) {
-  const confirmed = (r.samples || 1) >= 2;
   return r.official
     ? `<span class="stamp official">Official</span>`
-    : `<span class="stamp community">Community<b>&times;${fmtCount(r.samples || 1)}</b></span>` +
-      `<span class="vmark ${confirmed ? "ok" : "no"}" title="${confirmed
-        ? "confirmed by multiple independent submissions"
-        : "single submission — awaiting a second that agrees"}">${confirmed ? "&#10003;" : "&#10007;"}</span>`;
+    : `<span class="stamp community">Community<b>&times;${fmtCount(r.samples || 1)}</b></span>`;
 }
 
 function table(runs) {
@@ -351,19 +377,19 @@ function table(runs) {
     t.innerHTML = `<tr><td class="empty">No metered API runs yet. Subscription and agent runs live on the board below.</td></tr>`;
     return;
   }
-  const head = `<tr><th></th><th>Model</th><th></th><th class="num" title="correctness x token budgets: points decay when a task blows past its token deadline">DL Score</th><th class="num">Score</th><th class="num">Tasks</th>
+  const head = `<tr><th></th><th>Model</th><th></th><th class="num">Correctness</th><th class="num" title="Separate efficiency metric; community usage is client reported">Token DL</th><th class="num">Tasks</th>
     <th class="num">Cost</th><th class="num">Out tok</th><th class="num">Time</th><th>Source</th><th>Date</th></tr>`;
-  const rank = r => r.dscore != null ? r.dscore : scoreOf(r) - 0.05;
-  const rows = [...runs].sort((a, b) => rank(b) - rank(a)).map((r, i) => {
+  const rank = r => preciseScore(r);
+  const rows = [...runs].sort((a, b) => String(a.suite_hash || a.benchmark_version || "legacy").localeCompare(String(b.suite_hash || b.benchmark_version || "legacy")) || rank(b) - rank(a)).map((r, i) => {
     const f = family(r.model), c = runCost(r), sc = scoreOf(r);
     const stamp = stampOf(r);
     const canOpen = !!r.task_detail;
     return `<tr class="${canOpen ? "click-row" : ""}" ${canOpen ? 'title="click for the task-by-task breakdown"' : ""}>
-      <td class="rank">${canOpen ? '<span class="chev">&#9656;</span>' : ""}${String(i + 1).padStart(2, "0")}</td>
+      <td class="rank">${canOpen ? `<button class="detail-toggle" aria-expanded="false" aria-label="Show task details for ${esc(r.model)} ${esc(r.effort)}"><span class="chev">&#9656;</span></button>` : ""}${String(1 + runs.filter(other => preciseScore(other) > preciseScore(r) + 1e-10).length).padStart(2, "0")}</td>
       <td class="mname"><span class="pdot" style="background:${f.color}"></span>${esc(r.model)}<span class="eff">[${esc(r.effort)}]</span></td>
       <td class="scorebar"><div class="track"><div class="fill" style="width:${sc}%;background:${f.color}"></div></div></td>
+      <td class="num"><span class="score-v" title="Unrounded: ${preciseScore(r)}">${fmtScore(sc)}</span>${r.score_err ? `<span class="err">±${r.score_err} SD</span>` : ""}</td>
       <td class="num">${r.dscore != null ? `<span class="score-v" style="color:var(--red)">${r.dscore}</span>` : `<span class="err" title="unmetered run: no per-task token data, so no Deadline Score">&ndash;</span>`}</td>
-      <td class="num"><span class="score-v">${sc}</span>${r.score_err ? `<span class="err">±${r.score_err}</span>` : ""}${(r.samples || 1) > 1 && r.strict_score != null && r.strict_score !== sc ? `<br><span class="err" title="strict score: a task only counts if EVERY attempt passed">strict ${Math.round(r.strict_score * 10) / 10}</span>` : ""}</td>
       <td class="num">${r.passed}/${r.total}</td>
       <td class="num">${c != null ? "$" + c.toFixed(4) : "-"}</td>
       <td class="num">${r.tokens_out ? r.tokens_out.toLocaleString() : "-"}</td>
@@ -381,18 +407,18 @@ function subTable(runs) {
     t.innerHTML = `<tr><td class="empty">Nothing submitted. The deadline passes for everyone.</td></tr>`;
     return;
   }
-  const head = `<tr><th></th><th>Model</th><th></th><th class="num" title="correctness x wall-clock budgets: points decay when a task takes longer than its time deadline">Time-DL</th><th class="num">Score</th><th class="num">Tasks</th>
+  const head = `<tr><th></th><th>Model</th><th></th><th class="num" title="Task credit with time-budget discounts; timing basis is in the expanded details">TIME-DL</th><th class="num">Score</th><th class="num">Tasks</th>
     <th class="num">Time</th><th>Source</th><th>Date</th></tr>`;
-  const rank = r => r.tdl_score != null ? r.tdl_score : scoreOf(r) - 0.05;
-  const rows = [...runs].sort((a, b) => rank(b) - rank(a)).map((r, i) => {
+  const rank = r => preciseScore(r);
+  const rows = [...runs].sort((a, b) => String(a.suite_hash || a.benchmark_version || "legacy").localeCompare(String(b.suite_hash || b.benchmark_version || "legacy")) || rank(b) - rank(a)).map((r, i) => {
     const f = family(r.model), sc = scoreOf(r);
     const canOpen = !!r.task_detail;
     return `<tr class="${canOpen ? "click-row" : ""}" ${canOpen ? 'title="click for the task-by-task breakdown"' : ""}>
-      <td class="rank">${canOpen ? '<span class="chev">&#9656;</span>' : ""}${String(i + 1).padStart(2, "0")}</td>
+      <td class="rank">${canOpen ? `<button class="detail-toggle" aria-expanded="false" aria-label="Show task details for ${esc(r.model)} ${esc(r.effort)}"><span class="chev">&#9656;</span></button>` : ""}${String(1 + runs.filter(other => preciseScore(other) > preciseScore(r) + 1e-10).length).padStart(2, "0")}</td>
       <td class="mname"><span class="pdot" style="background:${f.color}"></span>${esc(r.model)}<span class="eff">[${esc(r.effort)}]</span></td>
       <td class="scorebar"><div class="track"><div class="fill" style="width:${sc}%;background:${f.color}"></div></div></td>
-      <td class="num">${r.tdl_score != null ? `<span class="score-v" style="color:var(--red)">${r.tdl_score}</span>` : `<span class="err" title="no per-task timing data">&ndash;</span>`}</td>
-      <td class="num"><span class="score-v">${sc}</span>${r.score_err ? `<span class="err">±${r.score_err}</span>` : ""}</td>
+      <td class="num">${r.tdl_score != null ? `<span class="score-v" style="color:var(--red)">${fmtScore(r.tdl_score)}</span>` : `<span class="err" title="No per-task timing data">&ndash;</span>`}</td>
+      <td class="num"><span class="score-v" title="Unrounded: ${preciseScore(r)}">${fmtScore(sc)}</span>${r.score_err ? `<span class="err">±${r.score_err} SD</span>` : ""}</td>
       <td class="num">${r.passed}/${r.total}</td>
       <td class="num">${r.seconds ? Math.round(r.seconds) + "s" : "-"}</td>
       <td>${stampOf(r)}</td>
@@ -437,6 +463,11 @@ wireDetails(document.getElementById("t-subs"));
   ]);
   PRICES = prices;
   RUNS = [...official, ...community];
+  const cohort = document.getElementById("f-cohort");
+  const cohorts = [...new Map(RUNS.map(r => [cohortOf(r), r])).entries()]
+    .sort((a,b) => (b[1].when || "").localeCompare(a[1].when || ""));
+  cohort.innerHTML = cohorts.map(([key, r]) => `<option value="${esc(key)}">${esc(r.benchmark_version || "legacy")} / ${esc((r.suite_hash || "unrecorded").slice(0,8))}</option>`).join("");
+  cohort.addEventListener("change", render);
   const sel = document.getElementById("f-effort");
   [...new Set(RUNS.map(r => r.effort))].sort().forEach(e => {
     const o = document.createElement("option");
