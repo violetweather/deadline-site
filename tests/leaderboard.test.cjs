@@ -38,7 +38,8 @@ class Element {
   assert.equal(community.score, 65.36);
   assert.equal(community.dscore, 31.31);
   assert.equal(community.samples, 1);
-  assert.equal(community.seconds, null);
+  assert.equal(community.seconds, 13362.43);
+  assert.ok(elements.get('t-runs').innerHTML.includes('13362s'));
   assert.ok(elements.get('t-runs').innerHTML.includes('deepseek-v4-flash-0731'));
   assert.ok(elements.get('t-runs').innerHTML.includes('class="td-analysis"'));
   assert.ok(elements.get('t-runs').innerHTML.includes('Community<b>&times;1'));

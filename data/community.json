@@ -309,7 +309,7 @@
     "tokens_in": 44868,
     "tokens_out": 1048301,
     "cost_usd": null,
-    "seconds": null,
+    "seconds": 13362.43,
     "mode": "api",
     "tdl_score": null,
     "metering_source": "unverified client reports",
@@ -347,7 +347,7 @@
       "26_repo_bughunt": 1.0,
       "27_repo_bughunt_xl": 1.0
     },
-    "analysis": "DeepSeek V4 Flash fully passes 17 of 26 scored tasks and earns 65.36 correctness. Token DL is 31.31 using 1,048,301 reported output tokens. The repaired task 2 fully passes, while task 17 earns 56.96% task credit. The redacted interpreter has a syntax error; tasks 3, 23 and 25 were explicitly skipped. Tasks 2 and 17 replaced earlier blank replies, and that history is preserved. Receipts report deepseek/deepseek-v4-flash-0731; the submission used client 3 and an effort label of default. Usage is client reported and excludes the earlier blank attempts. The submitted elapsed total covers the resumed portion, so full-run time is not reported.",
+    "analysis": "DeepSeek V4 Flash fully passes 17 of 26 scored tasks and earns 65.36 correctness. Token DL is 31.31 using 1,048,301 reported output tokens. The repaired task 2 fully passes, while task 17 earns 56.96% task credit. The redacted interpreter has a syntax error; tasks 3, 23 and 25 were explicitly skipped. Tasks 2 and 17 replaced earlier blank replies, and that history is preserved. Receipts report deepseek/deepseek-v4-flash-0731; the submission used client 3 and an effort label of default. Usage is client reported and excludes the earlier blank attempts. Total reported task time is 13,362.43 seconds (3h 42m 42s), summed across all 27 retained replies. It excludes earlier blank attempts and pauses between sessions; the file-level 2,150.5-second total covered only the resumed portion.",
     "submission_count": 1,
     "published_source": {
       "submission_sha256": "8f9f8885c4fd9c9ec055b3cb404e461acf61a90ccec2d3dd004557e6eb7823a5",
@@ -359,6 +359,8 @@
         "17_machine_traces_xl"
       ]
     },
-    "source_when": "20260904"
+    "source_when": "20260904",
+    "timing_source": "sum of client-reported durations for all 27 retained task replies",
+    "timing_verified": false
   }
 ]
