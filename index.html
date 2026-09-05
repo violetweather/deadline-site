@@ -230,7 +230,9 @@ function frontier(runs) {
   document.getElementById("metric-name").textContent = M.label;
   const rows = runs.filter(r => M.get(r) != null);
   if (!rows.length) {
-    host.innerHTML = `<div class="empty">No metered API runs yet. Subscription and agent runs live on their own board below.</div>`;
+    host.innerHTML = runs.length
+      ? `<div class="empty">No ${M.label} measurements for these API results. Select Output tokens to view reported usage.</div>`
+      : `<div class="empty">No metered API runs yet. Subscription and agent runs live on their own board below.</div>`;
     return;
   }
   const W = 980, H = 440, L = 50, R = 30, T = 26, B = 48;

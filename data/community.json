@@ -1,1 +1,364 @@
-﻿[]
+[
+  {
+    "task_detail": {
+      "01_cipher_d2": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "medium",
+        "family": "cipher",
+        "points": 10,
+        "contribution": 0.8298755186721992,
+        "seconds": null
+      },
+      "02_cipher_d4": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "family": "cipher",
+        "points": 20,
+        "contribution": 1.6597510373443984,
+        "seconds": null
+      },
+      "03_cipher_d6": {
+        "credit": 0.0,
+        "note": "skipped (# SKIP)",
+        "difficulty": "brutal",
+        "family": "cipher",
+        "points": 35,
+        "contribution": 0.0,
+        "seconds": null
+      },
+      "04_cipher_d8": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "nightmare",
+        "family": "cipher",
+        "points": 70,
+        "contribution": 5.809128630705394,
+        "seconds": null
+      },
+      "05_cipher_d10": {
+        "credit": 0.03389079783,
+        "note": "854/2504 cases matched; 1/3 groups fully passed",
+        "difficulty": "nightmare",
+        "family": "cipher",
+        "points": 120,
+        "contribution": 0.3375017211286307,
+        "seconds": null
+      },
+      "06_machine_a": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "medium",
+        "family": "state machine",
+        "points": 15,
+        "contribution": 1.2448132780082988,
+        "seconds": null
+      },
+      "07_machine_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "family": "state machine",
+        "points": 30,
+        "contribution": 2.4896265560165975,
+        "seconds": null
+      },
+      "08_codec_a": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "medium",
+        "family": "codec",
+        "points": 15,
+        "contribution": 1.2448132780082988,
+        "seconds": null
+      },
+      "09_codec_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "family": "codec",
+        "points": 40,
+        "contribution": 3.319502074688797,
+        "seconds": null
+      },
+      "10_strange_calendar": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "family": "calendar",
+        "points": 20,
+        "contribution": 1.6597510373443984,
+        "seconds": null
+      },
+      "11_eval_a": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "family": "expression",
+        "points": 20,
+        "contribution": 1.6597510373443984,
+        "seconds": null
+      },
+      "12_eval_traces": {
+        "credit": 0.024277817103,
+        "note": "61/2329 cases matched; 0/3 groups fully passed",
+        "difficulty": "brutal",
+        "family": "expression",
+        "points": 40,
+        "contribution": 0.08059026424232366,
+        "seconds": null
+      },
+      "13_pairs_a": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "family": "pair counting",
+        "points": 25,
+        "contribution": 2.074688796680498,
+        "seconds": null
+      },
+      "14_pairs_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "family": "pair counting",
+        "points": 40,
+        "contribution": 3.319502074688797,
+        "seconds": null
+      },
+      "15_midnight_machine": {
+        "credit": 0.893886481867,
+        "note": "600/603 cases matched; 4/6 groups fully passed",
+        "difficulty": "nightmare",
+        "family": "interpreter",
+        "points": 100,
+        "contribution": 7.418145077734441,
+        "seconds": null
+      },
+      "16_calendar_traces": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "family": "calendar",
+        "points": 45,
+        "contribution": 3.7344398340248963,
+        "seconds": null
+      },
+      "17_machine_traces_xl": {
+        "credit": 0.569639935173,
+        "note": "1340/2872 cases matched; 1/3 groups fully passed",
+        "difficulty": "nightmare",
+        "family": "state machine",
+        "points": 70,
+        "contribution": 3.3091116566066394,
+        "seconds": null
+      },
+      "18_codec_traces_xl": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "nightmare",
+        "family": "codec",
+        "points": 70,
+        "contribution": 5.809128630705394,
+        "seconds": null
+      },
+      "19_redacted_machine": {
+        "credit": -0.15,
+        "note": "candidate returned an incomplete or extra response",
+        "difficulty": "nightmare",
+        "family": "interpreter",
+        "points": 90,
+        "contribution": -1.120331950207469,
+        "seconds": null
+      },
+      "20_sql_report": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "hard",
+        "family": "SQL",
+        "points": 20,
+        "contribution": 1.6597510373443984,
+        "seconds": null
+      },
+      "21_sql_traces": {
+        "credit": 0.929272992277,
+        "note": "378/404 cases matched; 1/3 groups fully passed",
+        "difficulty": "brutal",
+        "family": "SQL",
+        "points": 45,
+        "contribution": 3.4703140790427383,
+        "seconds": null
+      },
+      "22_sql_traces_xl": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "nightmare",
+        "family": "SQL",
+        "points": 65,
+        "contribution": 5.394190871369295,
+        "seconds": null
+      },
+      "23_js_cipher_traces": {
+        "credit": 0.0,
+        "note": "skipped (# SKIP)",
+        "difficulty": "hard",
+        "family": "cipher",
+        "points": 35,
+        "contribution": 0.0,
+        "seconds": null
+      },
+      "24_js_machine_traces": {
+        "credit": 0.0,
+        "note": "Required final-state labels are absent from the unchanged public prompt.",
+        "difficulty": "brutal",
+        "family": "unscored",
+        "points": 0,
+        "contribution": 0.0,
+        "seconds": null,
+        "scored": false
+      },
+      "25_js_eval_traces": {
+        "credit": 0.0,
+        "note": "skipped (# SKIP)",
+        "difficulty": "brutal",
+        "family": "expression",
+        "points": 45,
+        "contribution": 0.0,
+        "seconds": null
+      },
+      "26_repo_bughunt": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "brutal",
+        "family": "repository repair",
+        "points": 50,
+        "contribution": 4.149377593360996,
+        "seconds": null
+      },
+      "27_repo_bughunt_xl": {
+        "credit": 1.0,
+        "note": "",
+        "difficulty": "nightmare",
+        "family": "repository repair",
+        "points": 70,
+        "contribution": 5.809128630705394,
+        "seconds": null
+      }
+    },
+    "commentary": "Fully passed 17/26 tasks. Submitted wrong code on redacted_machine (negative credit under the continuous scoring rule; invalid execution receives -15%). Declared # SKIP on cipher_d6, js_cipher_traces, js_eval_traces (zero correctness credit). Partial credit on cipher_d10 (3%), eval_traces (2%), midnight_machine (89%), machine_traces_xl (57%), sql_traces (93%).",
+    "id": "community-deepseek-v4-flash-0731-default-eecf5b0a",
+    "model": "deepseek-v4-flash-0731",
+    "effort": "default",
+    "official": false,
+    "verified": true,
+    "benchmark_version": "deadline-3.4",
+    "suite_hash": "eecf5b0a714cbb6e5303c666fe78dd49c404fa140c643fe84cf231316a28a1f5",
+    "measurement_status": "single-sample",
+    "submitted_by": null,
+    "when": "20260904",
+    "score": 65.36,
+    "score_err": null,
+    "strict_score": 51.87,
+    "score_analysis": {
+      "score_unrounded": 65.36255076555975,
+      "weighting_scores": {
+        "points": 65.36255076555975,
+        "equal_task": 74.23449240096154,
+        "equal_family": 78.35542913432776
+      },
+      "leave_one_family_out": {
+        "SQL": 61.46990251837489,
+        "calendar": 63.38760848464868,
+        "cipher": 74.70511923337651,
+        "codec": 61.35358673379583,
+        "expression": 69.69523854917045,
+        "interpreter": 70.12119098899458,
+        "pair counting": 63.38760848464868,
+        "repository repair": 61.531680804147,
+        "state machine": 64.47192121677845
+      },
+      "family_scores": {
+        "SQL": 97.55175742497309,
+        "calendar": 100.0,
+        "cipher": 35.88513646193103,
+        "codec": 100.0,
+        "expression": 19.972488270590475,
+        "interpreter": 39.94139378247368,
+        "pair counting": 100.0,
+        "repository repair": 100.0,
+        "state machine": 73.80416996705218
+      },
+      "family_point_share": {
+        "SQL": 0.1078838174273859,
+        "calendar": 0.05394190871369295,
+        "cipher": 0.24066390041493776,
+        "codec": 0.1037344398340249,
+        "expression": 0.08713692946058091,
+        "interpreter": 0.15767634854771784,
+        "pair counting": 0.05394190871369295,
+        "repository repair": 0.0995850622406639,
+        "state machine": 0.0954356846473029
+      },
+      "interpretation": "Alternative weightings and family omissions describe sensitivity, not confidence intervals or new attempts."
+    },
+    "dscore": 31.31,
+    "samples": 1,
+    "passed": 17,
+    "total": 26,
+    "tokens_in": 44868,
+    "tokens_out": 1048301,
+    "cost_usd": null,
+    "seconds": null,
+    "mode": "api",
+    "tdl_score": null,
+    "metering_source": "unverified client reports",
+    "settings_verified": false,
+    "flags": [
+      "Model, effort and usage are client reported.",
+      "Tasks 2 and 17 contain replacement generations for earlier blank replies; current usage excludes those prior attempts."
+    ],
+    "tasks": {
+      "01_cipher_d2": 1.0,
+      "02_cipher_d4": 1.0,
+      "03_cipher_d6": 0.0,
+      "04_cipher_d8": 1.0,
+      "05_cipher_d10": 0.03389079783,
+      "06_machine_a": 1.0,
+      "07_machine_traces": 1.0,
+      "08_codec_a": 1.0,
+      "09_codec_traces": 1.0,
+      "10_strange_calendar": 1.0,
+      "11_eval_a": 1.0,
+      "12_eval_traces": 0.024277817103,
+      "13_pairs_a": 1.0,
+      "14_pairs_traces": 1.0,
+      "15_midnight_machine": 0.893886481867,
+      "16_calendar_traces": 1.0,
+      "17_machine_traces_xl": 0.569639935173,
+      "18_codec_traces_xl": 1.0,
+      "19_redacted_machine": -0.15,
+      "20_sql_report": 1.0,
+      "21_sql_traces": 0.929272992277,
+      "22_sql_traces_xl": 1.0,
+      "23_js_cipher_traces": 0.0,
+      "24_js_machine_traces": 0.0,
+      "25_js_eval_traces": 0.0,
+      "26_repo_bughunt": 1.0,
+      "27_repo_bughunt_xl": 1.0
+    },
+    "analysis": "DeepSeek V4 Flash fully passes 17 of 26 scored tasks and earns 65.36 correctness. Token DL is 31.31 using 1,048,301 reported output tokens. The repaired task 2 fully passes, while task 17 earns 56.96% task credit. The redacted interpreter has a syntax error; tasks 3, 23 and 25 were explicitly skipped. Tasks 2 and 17 replaced earlier blank replies, and that history is preserved. Receipts report deepseek/deepseek-v4-flash-0731; the submission used client 3 and an effort label of default. Usage is client reported and excludes the earlier blank attempts. The submitted elapsed total covers the resumed portion, so full-run time is not reported.",
+    "submission_count": 1,
+    "published_source": {
+      "submission_sha256": "8f9f8885c4fd9c9ec055b3cb404e461acf61a90ccec2d3dd004557e6eb7823a5",
+      "client": 3,
+      "requested_model": "~deepseek/deepseek-v4-flash-latest",
+      "model_echo": "deepseek/deepseek-v4-flash-0731",
+      "replaced_blank_tasks": [
+        "02_cipher_d4",
+        "17_machine_traces_xl"
+      ]
+    },
+    "source_when": "20260904"
+  }
+]
