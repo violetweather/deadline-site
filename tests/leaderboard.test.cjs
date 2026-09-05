@@ -39,11 +39,17 @@ class Element {
   assert.equal(community.dscore, 31.31);
   assert.equal(community.samples, 1);
   assert.equal(community.seconds, 13362.43);
+  assert.equal(community.cost_estimated, true);
+  assert.equal(community.cost_estimate.model, community.model);
+  assert.equal(evaluate('runCost(RUNS.find(r => r.model === "deepseek-v4-flash-0731"))'), 1.40349924);
+  assert.ok(elements.get('t-runs').innerHTML.includes('$1.4035'));
   assert.ok(elements.get('t-runs').innerHTML.includes('13362s'));
   assert.ok(elements.get('t-runs').innerHTML.includes('deepseek-v4-flash-0731'));
   assert.ok(elements.get('t-runs').innerHTML.includes('class="td-analysis"'));
   assert.ok(elements.get('t-runs').innerHTML.includes('Community<b>&times;1'));
-  assert.ok(elements.get('c-frontier').innerHTML.includes('No cost per run measurements'));
+  assert.ok(elements.get('c-frontier').innerHTML.includes('<svg'));
+  assert.ok(elements.get('c-frontier').innerHTML.includes('deepseek-v4-flash-0731'));
+  assert.ok(!elements.get('c-frontier').innerHTML.includes('NaN'));
   evaluate('metric = "tokens"; render()');
   assert.ok(elements.get('c-frontier').innerHTML.includes('<svg'));
   assert.ok(elements.get('c-frontier').innerHTML.includes('deepseek-v4-flash-0731'));
