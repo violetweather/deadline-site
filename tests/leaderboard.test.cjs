@@ -36,7 +36,7 @@ class Element {
   const sourceResults = ['official', 'community'].flatMap(name =>
     JSON.parse(fs.readFileSync(path.join(root, `data/${name}.json`), 'utf8')));
   assert.equal(evaluate('JSON.stringify(results)'), JSON.stringify(sourceResults), 'load saved results without rewriting or regrading');
-  assert.equal(evaluate('displayed().length'), 8, 'include all seven historical official results and the community result');
+  assert.equal(evaluate('displayed().length'), 9, 'include all seven historical official results and both community results');
   assert.equal(evaluate('manifest.tasks.length'), 27);
   assert.equal(evaluate('manifest.tasks.filter(t => t.scored !== false).length'), 26);
   assert.equal(evaluate('manifest.tasks.reduce((sum, t) => sum + t.points, 0)'), 1205);
@@ -78,6 +78,30 @@ class Element {
   evaluate('renderTasks()');
   assert.ok(!/Version 4|DEADLINE 4|deadline-v4|v4\//i.test(html + script));
   assert.ok(html.includes('<title>Deadline</title>'));
+  const minimax = evaluate('results.find(r => r.model === "minimax/minimax-m3:free")');
+  assert.ok(minimax && !minimax.official && minimax.verified);
+  assert.equal(minimax.score, 38.44);
+  assert.equal(minimax.dscore, 28.64);
+  assert.equal(minimax.strict_score, 29.88);
+  assert.equal(minimax.passed, 11);
+  assert.equal(minimax.total, 26);
+  assert.equal(minimax.samples, 1);
+  assert.equal(minimax.seconds, 5274);
+  assert.equal(minimax.tokens_in, 46181);
+  assert.equal(minimax.tokens_out, 486006);
+  assert.equal(minimax.cost_estimated, true);
+  assert.equal(minimax.cost_estimate.model, minimax.model);
+  assert.equal(evaluate('runCost(results.find(r => r.model === "minimax/minimax-m3:free"))'), 0);
+  assert.equal(minimax.published_source.extraction_correction.policy, 'last-language-block-v1');
+  assert.equal(minimax.published_source.extraction_correction.new_model_calls, 0);
+  assert.equal(minimax.published_source.extraction_correction.existing_published_entries_changed, 0);
+  assert.equal(minimax.task_detail['12_eval_traces'].credit, 0.989231106072);
+  assert.equal(minimax.task_detail['21_sql_traces'].credit, 0.929272992277);
+  assert.ok(minimax.analysis.includes('correcting code-block extraction'));
+  assert.ok(elements.get('leaderboard').innerHTML.includes('5274s'));
+  assert.ok(elements.get('leaderboard').innerHTML.includes('$0.0000'));
+  assert.ok(elements.get('leaderboard').innerHTML.includes('486,006'));
+  assert.ok(elements.get('c-frontier').innerHTML.includes('minimax/minimax-m3:free'));
   const community = evaluate('results.find(r => r.model === "deepseek-v4-flash-0731")');
   assert.ok(community && !community.official && community.verified);
   assert.equal(community.score, 65.36);
@@ -100,7 +124,7 @@ class Element {
   assert.ok(elements.get('c-frontier').innerHTML.includes('deepseek-v4-flash-0731'));
   assert.ok(!elements.get('c-frontier').innerHTML.includes('NaN'));
   evaluate('cohort = "community"; renderBoards()');
-  assert.equal(evaluate('displayed().length'), 1);
+  assert.equal(evaluate('displayed().length'), 2);
   evaluate('cohort = "all"; metric = "cost"; renderBoards()');
   assert.ok(elements.get('leaderboard').innerHTML.includes('settings not independently verified'));
   assert.equal(evaluate('stampOf({official:true})'), '<span class="stamp official">Official</span>');
