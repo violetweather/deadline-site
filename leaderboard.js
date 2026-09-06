@@ -106,18 +106,14 @@ function grouped(rows) {
   return groups;
 }
 
-function stampOf(r) {
-  return r.official
-    ? `<span class="stamp official">Official</span>`
-    : `<span class="stamp community">Community<b>&times;${fmtCount(r.samples || 1)}</b></span>`;
-}
-
 function scoreCellHTML(r) {
   if (!Number.isFinite(r.score)) {
     return '<span class="score-v null">—</span>';
   }
   const err = Number.isFinite(r.score_err) ? `<span class="err">±${r.score_err}</span>` : "";
-  return `<span class="score-v" title="Unrounded: ${preciseScore(r)}">${fmtScore(r.score)}</span>${err}`;
+  const value = Number.isFinite(preciseScore(r)) ? preciseScore(r) : r.score;
+  const fill = Math.max(0, Math.min(100, value));
+  return `<span class="score-gauge" style="--score-color:${providerOf(r.model).color}"><span class="score-number"><span class="score-v" title="Unrounded: ${value}">${fmtScore(r.score)}</span>${err}</span><span class="score-track" aria-hidden="true"><span class="score-fill" style="width:${fill}%"></span></span></span>`;
 }
 
 function measurementDetailsHTML(r) {
@@ -159,14 +155,14 @@ function renderLeaderboard() {
   const host = document.getElementById("leaderboard");
   const rows = displayed();
   if (!rows.length) { host.innerHTML = EMPTY_BOARD; return; }
-  const COLS = 11;
+  const COLS = 10;
   const arrow = k => sortKey === k ? (sortAsc ? " ▴" : " ▾") : "";
   const th = (k, tip) => `<th scope="col" class="num sortable${sortKey === k ? " on" : ""}" data-sort="${k}" aria-sort="${sortKey === k ? (sortAsc ? "ascending" : "descending") : "none"}"><button type="button" class="sort-button" title="${tip} — click to sort">${SORTS[k].label}${arrow(k)}</button></th>`;
   const head = `<thead><tr><th></th><th>Model</th>
     ${th("score", "Correctness using published task points")}
     ${th("dscore", "Separate token-efficiency metric; community usage is client reported")}
     <th class="num">Tasks</th>
-    ${th("tdl", "Descriptive time-discounted estimate; timing assumptions in each post-mortem")}<th class="num">Out tok</th><th class="num">Cost</th><th class="num">Time</th><th>Source</th><th>Date</th></tr></thead>`;
+    ${th("tdl", "Descriptive time-discounted estimate; timing assumptions in each post-mortem")}<th class="num">Out tok</th><th class="num">Cost</th><th class="num">Time</th><th>Date</th></tr></thead>`;
   let body = "";
   for (const [key, members] of grouped(rows)) {
     if (grouped(rows).length > 1) body += `<tr class="cohort-tr"><td colspan="${COLS}">${COHORT_LABEL[key]} — ranked within this cohort only</td></tr>`;
@@ -181,7 +177,7 @@ function renderLeaderboard() {
         <td class="num">${METRICS.tokens.get(r) != null ? r.tokens_out.toLocaleString("en-US") : "—"}</td>
         <td class="num">${runCost(r) != null ? "$" + runCost(r).toFixed(4) : "—"}</td>
         <td class="num">${Number.isFinite(r.seconds) ? Math.round(r.seconds) + "s" : "—"}</td>
-        <td>${stampOf(r)}</td><td class="date">${esc((r.when || "").replace(/^(\d{4})(\d{2})(\d{2}).*/, "$1-$2-$3"))}</td></tr>` + detailHTML(r, COLS);
+        <td class="date">${esc((r.when || "").replace(/^(\d{4})(\d{2})(\d{2}).*/, "$1-$2-$3"))}</td></tr>` + detailHTML(r, COLS);
     });
   }
   host.innerHTML = `<table class="leaderboard-table">${head}<tbody>${body}</tbody></table>`;

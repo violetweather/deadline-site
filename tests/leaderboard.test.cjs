@@ -45,7 +45,7 @@ class Element {
   assert.ok(!elements.get('hardest').innerHTML.includes('24_js_machine_traces'), 'unscored task is not a hardest-task failure');
   for (const r of sourceResults) {
     context.savedResult = r;
-    const detail = evaluate('detailHTML(savedResult, 11)');
+    const detail = evaluate('detailHTML(savedResult, 10)');
     assert.ok(detail.includes(evaluate('esc(savedResult.analysis)')));
     assert.ok(detail.includes(evaluate('esc(savedResult.commentary)')));
     assert.equal((detail.match(/class="td-row"/g) || []).length, 27);
@@ -119,7 +119,16 @@ class Element {
   assert.ok(elements.get('leaderboard').innerHTML.includes('13362s'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('deepseek-v4-flash-0731'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('class="td-analysis"'));
-  assert.ok(elements.get('leaderboard').innerHTML.includes('Community<b>&times;1'));
+  assert.ok(!elements.get('leaderboard').innerHTML.includes('<th>Source</th>'));
+  assert.ok(!elements.get('leaderboard').innerHTML.includes('class="stamp'));
+  assert.equal((elements.get('leaderboard').innerHTML.match(/class="score-track"/g) || []).length, 9);
+  assert.ok(elements.get('leaderboard').innerHTML.includes('colspan="10"'));
+  assert.ok(!elements.get('leaderboard').innerHTML.includes('colspan="11"'));
+  assert.ok(evaluate('scoreCellHTML({model:"test", score:125})').includes('width:100%'));
+  assert.ok(evaluate('scoreCellHTML({model:"test", score:-5})').includes('width:0%'));
+  assert.ok(evaluate('scoreCellHTML({model:"test", score:-5})').includes('-5.00'));
+  assert.ok(!evaluate('scoreCellHTML({model:"test", score:null})').includes('score-track'));
+  assert.ok(evaluate('scoreCellHTML({model:"test", score:86.20, score_analysis:{score_unrounded:86.204}})').includes('width:86.204%'));
   assert.ok(elements.get('c-frontier').innerHTML.includes('<svg'));
   assert.ok(elements.get('c-frontier').innerHTML.includes('deepseek-v4-flash-0731'));
   assert.ok(!elements.get('c-frontier').innerHTML.includes('NaN'));
@@ -131,7 +140,6 @@ class Element {
   assert.equal(evaluate('displayed().length'), 2);
   evaluate('cohort = "all"; metric = "cost"; renderBoards()');
   assert.ok(elements.get('leaderboard').innerHTML.includes('settings not independently verified'));
-  assert.equal(evaluate('stampOf({official:true})'), '<span class="stamp official">Official</span>');
   assert.ok(elements.get('leaderboard').innerHTML.includes('>TIME-DL</button>'));
   assert.ok(!elements.get('leaderboard').innerHTML.includes('Time-DL (unverified)'));
   assert.ok(!html.includes('class="measurement-note"'));
@@ -160,5 +168,5 @@ class Element {
   assert.equal(evaluate('fmtScore(86.2)'), '86.20');
   context.escapeProbe = '<script>"&';
   assert.equal(evaluate('esc(escapeProbe)'), '&lt;script&gt;&quot;&amp;');
-  console.log('Leaderboard rendering, precision, cohort isolation, effort filters, compact badges and escaping: PASS');
+  console.log('Leaderboard rendering, precision, cohort isolation, effort filters, score bars and escaping: PASS');
 })().catch(error => { console.error(error); process.exitCode = 1; });
