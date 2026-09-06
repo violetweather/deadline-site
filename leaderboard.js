@@ -73,7 +73,7 @@ const SORTS = {
 const METRICS = {
   cost: {label: "cost per run", get: runCost,
          fmt: v => "$" + v.toFixed(v < 0.1 ? 3 : 2), invert: true},
-  tokens: {label: "output tokens", get: r => Number.isFinite(r.tokens_out) && modeOf(r) === "api" ? r.tokens_out : null,
+  tokens: {label: "output tokens", get: r => Number.isFinite(r.tokens_out) && (modeOf(r) === "api" || r.metering_source) ? r.tokens_out : null,
            fmt: v => v >= 1000 ? (v / 1000).toFixed(0) + "k" : String(Math.round(v)), invert: true},
   seconds: {label: "run time", get: r => Number.isFinite(r.seconds) ? r.seconds : null,
             fmt: v => Math.round(v) + "s", invert: true},
@@ -126,7 +126,7 @@ function scoreCellHTML(r) {
 function measurementDetailsHTML(r) {
   return `<p class="td-meta">Full-pass points: ${fmtScore(r.strict_score)}/100. Grader: ${esc(r.benchmark_version || "legacy")} / ${esc((r.suite_hash || "unrecorded").slice(0,12))}.
     ${(r.samples || 1) === 1 ? "Single sample; repeat spread unmeasured." : `${r.samples} attempts per task; spread is repeat standard deviation.`}
-    ${r.settings_verified ? "Generation settings verified." : "Generation settings not independently verified."}</p>` +
+    ${r.settings_verified ? (r.settings_verification_basis ? `Generation settings checked: ${esc(r.settings_verification_basis)}.` : "Generation settings verified.") : "Generation settings not independently verified."}</p>` +
     (r.tdl_score != null ? `<p class="td-meta">TIME-DL is a descriptive estimate from saved answer timestamps, not measured latency.${(r.tdl_missing_tasks || []).length ? ` ${(r.tdl_missing_tasks || []).length} task(s) have no usable interval and get no time discount, which can overstate it.` : ""}</p>` : "");
 }
 

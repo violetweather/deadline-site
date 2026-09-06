@@ -36,7 +36,7 @@ class Element {
   const sourceResults = ['official', 'community'].flatMap(name =>
     JSON.parse(fs.readFileSync(path.join(root, `data/${name}.json`), 'utf8')));
   assert.equal(evaluate('JSON.stringify(results)'), JSON.stringify(sourceResults), 'load saved results without rewriting or regrading');
-  assert.equal(evaluate('displayed().length'), 9, 'include all seven historical official results and both community results');
+  assert.equal(evaluate('displayed().length'), 10, 'include the eight maintainer results and both community results');
   assert.equal(evaluate('manifest.tasks.length'), 27);
   assert.equal(evaluate('manifest.tasks.filter(t => t.scored !== false).length'), 26);
   assert.equal(evaluate('manifest.tasks.reduce((sum, t) => sum + t.points, 0)'), 1205);
@@ -130,7 +130,7 @@ class Element {
   assert.ok(elements.get('leaderboard').innerHTML.includes('class="td-analysis"'));
   assert.ok(!elements.get('leaderboard').innerHTML.includes('<th>Source</th>'));
   assert.ok(!elements.get('leaderboard').innerHTML.includes('class="stamp'));
-  assert.equal((elements.get('leaderboard').innerHTML.match(/class="score-track"/g) || []).length, 9);
+  assert.equal((elements.get('leaderboard').innerHTML.match(/class="score-track"/g) || []).length, 10);
   assert.ok(elements.get('leaderboard').innerHTML.includes('colspan="10"'));
   assert.ok(!elements.get('leaderboard').innerHTML.includes('colspan="11"'));
   assert.ok(evaluate('scoreCellHTML({model:"test", score:125})').includes('width:100%'));
@@ -153,6 +153,29 @@ class Element {
   assert.ok(!elements.get('leaderboard').innerHTML.includes('Time-DL (unverified)'));
   assert.ok(!html.includes('class="measurement-note"'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('Full-pass points'));
+  const astra = evaluate('results.find(r => r.model === "gpt-6-astra")');
+  assert.ok(astra && astra.official && astra.verified);
+  assert.equal(astra.mode, 'sub');
+  assert.equal(astra.effort, 'xhigh');
+  assert.equal(astra.samples, 1);
+  assert.equal(astra.certified, false);
+  assert.equal(astra.score, 93.65);
+  assert.equal(astra.dscore, 82.33);
+  assert.equal(astra.passed, 24);
+  assert.equal(astra.total, 26);
+  assert.equal(astra.task_detail['24_js_machine_traces'].scored, false);
+  assert.equal(astra.task_detail['25_js_eval_traces'].credit, 1);
+  assert.equal(astra.tokens_in, 2620725);
+  assert.equal(astra.tokens_out, 110960);
+  assert.equal(astra.usage.cached_input_tokens, 2086656);
+  assert.equal(astra.cost_estimated, true);
+  assert.ok(Math.abs(astra.cost_usd - ((astra.tokens_in - astra.usage.cached_input_tokens) * 10 + astra.usage.cached_input_tokens + astra.tokens_out * 50) / 1e6) < 1e-12, 'cached input is discounted, and reasoning output is not billed twice');
+  assert.equal(astra.cost_estimate.flex_applied, false);
+  assert.equal(astra.cost_estimate.alternative_flex_cost_usd, astra.cost_usd / 2);
+  assert.equal(evaluate('cohortOf(results.find(r => r.model === "gpt-6-astra"))'), 'official/agent');
+  assert.equal(evaluate('grouped(displayed()).find(([key]) => key === "official/agent")[1][0].model'), 'gpt-6-astra');
+  assert.ok(elements.get('leaderboard').innerHTML.includes('$12.9753'));
+  assert.ok(elements.get('leaderboard').innerHTML.includes('110,960'));
   const rendered = elements.get('leaderboard').innerHTML;
   assert.ok(rendered.indexOf('class="td-analysis"') < rendered.indexOf('class="td-meta"'));
   assert.ok(rendered.includes('class="td-meta"'));
