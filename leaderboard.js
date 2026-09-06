@@ -6,12 +6,15 @@ const esc = value => String(value).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&
 const fmtScore = n => Number.isFinite(n) ? n.toFixed(2) : "—";
 const EMPTY_BOARD = '<p class="empty">No graded results match these filters.</p>';
 
-/* ---- provider marks: local monochrome SVGs tinted via CSS mask ---- */
+/* ---- local brand marks; source and license in logos/README.md ---- */
 const PROVIDERS = {
   anthropic: {logo: "anthropic", color: "var(--c-anthropic)"},
+  claude: {logo: "claude", color: "var(--c-anthropic)", multicolor: true},
   openai: {logo: "openai", color: "var(--c-openai)"},
   google: {logo: "google", color: "var(--c-google)"},
-  deepseek: {logo: "deepseek", color: "var(--c-deepseek)"},
+  gemini: {logo: "gemini", color: "var(--c-google)", multicolor: true},
+  deepseek: {logo: "deepseek", color: "var(--c-deepseek)", multicolor: true},
+  minimax: {logo: "minimax", color: "var(--c-minimax)", multicolor: true},
   meta: {logo: "meta", color: "var(--c-meta)"},
   "meta-llama": {logo: "meta", color: "var(--c-meta)"},
   mistral: {logo: "mistral", color: "var(--c-mistral)"},
@@ -23,17 +26,21 @@ const PROVIDERS = {
 };
 const GENERIC = {logo: "generic", color: "var(--c-other)"};
 function providerOf(model) {
-  const prefix = String(model || "").split("/")[0].trim().toLowerCase();
+  const parts = String(model || "").trim().toLowerCase().split("/");
+  const name = parts.at(-1), prefix = parts[0];
+  if (/^claude/.test(name)) return PROVIDERS.claude;
+  if (/^gemini/.test(name)) return PROVIDERS.gemini;
   if (PROVIDERS[prefix]) return PROVIDERS[prefix];
-  if (/^claude/.test(prefix)) return PROVIDERS.anthropic;
   if (/^(gpt|o\d)/.test(prefix)) return PROVIDERS.openai;
-  if (/^(gemini|gemma)/.test(prefix)) return PROVIDERS.google;
+  if (/^gemma/.test(prefix)) return PROVIDERS.google;
   if (/^deepseek/.test(prefix)) return PROVIDERS.deepseek;
+  if (/^minimax/.test(prefix)) return PROVIDERS.minimax;
   return GENERIC;
 }
 function logoHTML(model) {
   const p = providerOf(model);
-  const url = "logos/" + p.logo + ".svg";
+  const url = "logos/" + p.logo + ".svg?v=2";
+  if (p.multicolor) return `<img class="plogo" src="${url}" width="18" height="18" alt="" aria-hidden="true">`;
   return `<span class="plogo" style="background:${p.color};-webkit-mask-image:url('${url}');mask-image:url('${url}')" aria-hidden="true"></span>`;
 }
 

@@ -58,7 +58,11 @@ class Element {
   assert.equal(evaluate('METRICS.tokens.get(results.find(r => r.mode === "sub"))'), null, 'unmetered zero placeholders must not appear as measured zero usage');
   assert.equal(evaluate('providerOf("deepseek-v4-flash-0731").logo'), 'deepseek');
   assert.equal(evaluate('providerOf("gpt-5.6-sol").logo'), 'openai');
-  assert.equal(evaluate('providerOf("claude-sonnet-5").logo'), 'anthropic');
+  assert.equal(evaluate('providerOf("claude-sonnet-5").logo'), 'claude');
+  assert.equal(evaluate('providerOf("anthropic/claude-opus-5").logo'), 'claude');
+  assert.equal(evaluate('providerOf("google/gemini-3.8-flash").logo'), 'gemini');
+  assert.equal(evaluate('providerOf("minimax-m3").logo'), 'minimax');
+  assert.equal(evaluate('providerOf("minimax/minimax-m3:free").logo'), 'minimax');
   for (const name of ['cost', 'tokens', 'seconds', 'tdl', 'eff']) {
     context.chartMetric = name;
     evaluate('metric = chartMetric; renderFrontier()');
@@ -90,9 +94,12 @@ class Element {
   assert.equal(minimax.tokens_in, 46181);
   assert.equal(minimax.tokens_out, 486006);
   assert.equal(minimax.cost_estimated, true);
-  assert.equal(minimax.cost_estimate.model, "minimax/minimax-m3:free");
+  assert.equal(minimax.cost_estimate.model, "MiniMax-M3");
+  assert.equal(minimax.cost_estimate.original_requested_model, "minimax/minimax-m3:free");
+  assert.equal(minimax.cost_estimate.estimate_type, "hypothetical_paid");
+  assert.equal(minimax.cost_estimate.pricing_source, "https://platform.minimax.io/docs/guides/pricing-paygo");
   assert.equal(minimax.published_source.requested_model, "minimax/minimax-m3:free");
-  assert.equal(evaluate('runCost(results.find(r => r.model === "minimax-m3"))'), 0);
+  assert.equal(evaluate('runCost(results.find(r => r.model === "minimax-m3"))'), 0.5970615);
   assert.equal(minimax.published_source.extraction_correction.policy, 'last-language-block-v1');
   assert.equal(minimax.published_source.extraction_correction.new_model_calls, 0);
   assert.equal(minimax.published_source.extraction_correction.existing_published_entries_changed, 0);
@@ -100,7 +107,7 @@ class Element {
   assert.equal(minimax.task_detail['21_sql_traces'].credit, 0.929272992277);
   assert.ok(minimax.analysis.includes('correcting code-block extraction'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('5274s'));
-  assert.ok(elements.get('leaderboard').innerHTML.includes('$0.0000'));
+  assert.ok(elements.get('leaderboard').innerHTML.includes('$0.5971'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('486,006'));
   assert.ok(elements.get('c-frontier').innerHTML.includes('minimax-m3'));
   const community = evaluate('results.find(r => r.model === "deepseek-v4-flash-0731")');
@@ -111,11 +118,13 @@ class Element {
   assert.equal(community.seconds, 13362.43);
   assert.equal(community.cost_estimated, true);
   assert.equal(community.cost_estimate.model, community.model);
-  assert.equal(community.cost_estimate.pricing_source, "https://openrouter.ai/deepseek/deepseek-v4-flash-0731");
-  assert.equal(community.cost_estimate.input_usd_per_million, 0.04998);
-  assert.equal(community.cost_estimate.output_usd_per_million, 0.09996);
-  assert.equal(evaluate('runCost(results.find(r => r.model === "deepseek-v4-flash-0731"))'), 0.1070306706);
-  assert.ok(elements.get('leaderboard').innerHTML.includes('$0.1070'));
+  assert.equal(community.cost_estimate.pricing_source, "https://api-docs.deepseek.com/quick_start/pricing/");
+  assert.equal(community.cost_estimate.estimate_type, "hypothetical_first_party");
+  assert.equal(community.cost_estimate.input_usd_per_million, 0.22);
+  assert.equal(community.cost_estimate.output_usd_per_million, 0.66);
+  assert.equal(community.cost_estimate.advertised_discount_percent, 50);
+  assert.equal(evaluate('runCost(results.find(r => r.model === "deepseek-v4-flash-0731"))'), 0.70174962);
+  assert.ok(elements.get('leaderboard').innerHTML.includes('$0.7017'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('13362s'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('deepseek-v4-flash-0731'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('class="td-analysis"'));
