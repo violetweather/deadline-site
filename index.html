@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Deadline</title>
 <meta name="description" content="A closed coding benchmark for AI models. 27 machine-generated tasks, token deadlines, hidden fuzz-tested graders, no judge model, no self-reported scores.">
 <meta property="og:type" content="website">
@@ -15,103 +15,110 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#e5484d">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Doto:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=7">
+  <script src="theme.js"></script>
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
-<div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
-<nav><div class="nav-in">
-  <a class="brand" href="index.html">DEADLINE<em>.</em></a>
-  <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
-  <span class="nav-links">
-    <a href="how.html"><span>How it works</span></a>
-    <a href="submit.html"><span>Submit</span></a>
-    <a href="https://github.com/violetweather/deadline-site"><span>GitHub</span></a>
-  </span>
-</div></nav>
-
-<div class="wrap">
+<a class="skip-link" href="#main">Skip to content</a>
+<nav class="site-nav" aria-label="Main navigation">
+  <div class="nav-in">
+    <a class="brand" href="#main" aria-label="DEADLINE home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>DEADLINE<span class="brand-dot">.</span></a>
+    <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+    <div class="nav-links"><a href="#results"><span>Leaderboard</span></a><a href="#tasks"><span>Tasks</span></a><a href="#methodology"><span>Methodology</span></a></div>
+    <div class="nav-tools">
+      <a class="archive-link" href="submit.html">Submit <span aria-hidden="true">↗</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.4 14.1A8.5 8.5 0 0 1 9.9 3.6a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+<main class="wrap" id="main">
   <header class="hero">
-    <h1 class="visually-hidden">Deadline — a closed coding benchmark for AI models</h1>
-    <div class="wordmark" aria-hidden="true">
-      <svg viewBox="0 0 1000 150" preserveAspectRatio="none">
-        <text x="0" y="146" textLength="1000" lengthAdjust="spacingAndGlyphs">DEAD<tspan class="lm">LINE</tspan></text>
-      </svg>
-      <div class="strike"></div>
-    </div>
-
-    <div class="hero-row">
-      <p class="sub"><b>27 public coding tasks. Private, machine-graded results.</b>
-      Deadline 3.4 regrades saved answers on 26 tasks with balanced semantic coverage and continuous partial credit.
-      Current official results have one attempt per task. Small score differences do not establish which model is better.</p>
-      <div class="flapclock">
-        <div class="fc-label">T-minus · midnight local</div>
-        <div class="fc-cells" id="fc-cells" role="timer" aria-label="time left today"></div>
+    <div class="hero-top">
+      <div class="hero-title">
+        <div class="edition"><span class="status-dot" aria-hidden="true"></span> The coding benchmark</div>
+        <h1>DEADLINE<span>.</span></h1>
+        <p class="hero-tagline">Every model meets its deadline.</p>
       </div>
+      <div class="statline" id="hero-stats" aria-label="Benchmark at a glance"></div>
     </div>
-
-    <div class="btns">
-      <a class="btn primary" href="submit.html">Submit a verified result</a>
-      <a class="btn" href="how.html">How it works</a>
+    <div class="hero-bottom">
+      <div class="hero-copy">
+        <p class="sub"><span id="task-total">27</span> public coding tasks. Hidden systems to reverse-engineer. Private, machine-graded results.</p>
+        <p class="hero-note">Correctness out of 100. Continuous partial credit. Token efficiency measured separately. No judge model.</p>
+      </div>
+      <div class="hero-actions"><a class="btn primary" href="deadline.zip" download>Download runner <span aria-hidden="true">↗</span></a><a class="btn" href="submit.html">Submit a result <span aria-hidden="true">↗</span></a></div>
     </div>
-    <p class="fineprint">No extensions <em>&#10007;</em> no excuses <em>&#10007;</em> graded by machines, not vibes</p>
-
-    <div class="dayline" aria-hidden="true">
-      <div class="dl-head">
-        <span class="dl-title">Today &mdash; local time</span>
-        <span class="dl-left" id="dl-left"></span>
+    <div class="deadline-strip">
+      <div class="flapclock"><div class="fc-label">Midnight, local time</div><div class="fc-cells" id="fc-cells" role="timer" aria-live="off" aria-label="Time to local midnight"></div></div>
+      <div class="dayline" aria-hidden="true">
+        <div class="dl-head"><span class="dl-title">Today's deadline</span><span class="dl-left" id="dl-left"></span></div>
+        <div class="dl-strip"><div class="dl-fill" id="dl-fill"></div><div class="dl-now" id="dl-now"><i id="dl-clock"></i></div><span class="dl-flag">24:00</span></div>
+        <div class="dl-labels"><b style="left:0">00</b><b style="left:25%">06</b><b style="left:50%">12</b><b style="left:75%">18</b><b style="left:100%">24</b></div>
       </div>
-      <div class="dl-strip">
-        <div class="dl-fill" id="dl-fill"></div>
-        <div class="dl-now" id="dl-now"><i id="dl-clock"></i></div>
-        <span class="dl-flag">Deadline</span>
-      </div>
-      <div class="dl-labels">
-        <b style="left:0">00</b><b style="left:25%">06</b><b style="left:50%">12</b>
-        <b style="left:75%">18</b><b style="left:100%">24</b>
-      </div>
+      <p class="fineprint">No extensions.<br>No excuses.<br><span>Graded by machines, not vibes.</span></p>
     </div>
-
-    <div class="statline" id="hero-stats"></div>
+    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
   </header>
 
-  <h2 class="section">Leaderboard</h2>
-  <p class="meta-line" id="meta-line"></p>
+  <section class="results-section" id="results" aria-labelledby="results-title">
+    <div class="section-heading"><h2 id="results-title">Leaderboard</h2><a class="text-link" href="how.html">How it works <span aria-hidden="true">↗</span></a></div>
+    <div class="results-context"><p id="release-status" role="status">27 public tasks · 26 scored · Saved answers regraded in Docker.</p><a href="how.html">Methodology &amp; limitations <span aria-hidden="true">↗</span></a></div>
+    <div class="board-toolbar"><div class="chips" id="cohort-chips" role="group" aria-label="Filter result cohort">
+      <button class="chip on" data-cohort="all" aria-pressed="true">All results</button>
+      <button class="chip" data-cohort="official" aria-pressed="false">Official</button>
+      <button class="chip" data-cohort="community" aria-pressed="false">Community</button>
+      <button class="chip" data-cohort="official/api" aria-pressed="false">Official / API</button>
+      <button class="chip" data-cohort="official/agent" aria-pressed="false">Official / Agent</button>
+      <button class="chip" data-cohort="community/api" aria-pressed="false">Community / API</button>
+      <button class="chip" data-cohort="community/agent" aria-pressed="false">Community / Agent</button>
+    </div><label class="select-field effort-filter" for="f-effort"><span>Effort</span><select id="f-effort"><option value="all">All efforts</option></select></label></div>
+    <div class="panel frontier-panel">
+      <div class="panel-head"><h3>Score <span class="muted">vs <span id="metric-name">cost per run</span></span></h3>
+        <div class="chips metric-chips" id="metric-chips" role="group" aria-label="Chart measurement">
+          <button class="chip on" data-metric="cost" aria-pressed="true">Cost</button>
+          <button class="chip" data-metric="tokens" aria-pressed="false">Output tokens</button>
+          <button class="chip" data-metric="seconds" aria-pressed="false">Time</button>
+          <button class="chip" data-metric="eff" aria-pressed="false">Efficiency</button>
+          <button class="chip" data-metric="tdl" aria-pressed="false">TIME-DL</button>
+        </div>
+      </div>
+      <div class="panel-body chart-scroll" id="c-frontier" tabindex="0" role="region" aria-label="Score comparison chart"><p class="empty">Loading graded results…</p></div>
+      <div class="chart-legend"><span><i class="legend-dot solid" aria-hidden="true"></i> Official</span><span><i class="legend-dot" aria-hidden="true"></i> Community</span><span class="legend-note">Correctness on the vertical axis.</span></div>
+    </div>
+    <div class="table-heading"><h3>All results</h3><span>Open a model for its post-mortem <span aria-hidden="true">↘</span></span></div>
+    <div class="panel table-panel"><div class="panel-body chart-scroll" id="leaderboard" tabindex="0" role="region" aria-label="Model leaderboard"><p class="empty">Loading graded results…</p></div></div>
+    <p class="meta-line cohort-note">Ranks stay within Official/Community and API/Agent cohorts. Different suite versions are never combined.</p>
+  </section>
 
-  <div class="chips" id="metric-chips">
-    <button class="chip on" data-metric="cost">Cost</button>
-    <button class="chip" data-metric="tokens">Output tokens</button>
-    <button class="chip" data-metric="time">Time</button>
-    <button class="chip" data-metric="eff">Efficiency</button>
-    <span class="gap"></span>
-    <button class="chip on" data-source="all">All</button>
-    <button class="chip" data-source="official">Official</button>
-    <button class="chip" data-source="community">Community</button>
-    <span class="gap"></span>
-    <select id="f-effort" aria-label="filter by effort"><option value="all">All efforts</option></select>
-    <select id="f-cohort" aria-label="Grading version"></select>
-    <span class="legend" id="legend"></span>
-  </div>
+  <section class="hardest-section" aria-labelledby="hardest-title">
+    <div class="section-heading"><h2 id="hardest-title">Where models fall short</h2><span class="section-aside">Hardest tasks</span></div>
+    <p class="section-description">The lowest mean task credits across the selected results. Appears after two graded entries.</p>
+    <div class="panel hardest-panel"><div class="panel-body" id="hardest"><p class="empty">Needs at least two graded entries.</p></div></div>
+  </section>
 
-  <div class="panel">
-    <div class="panel-head"><span class="live">&#9679;</span> Score vs <span id="metric-name">cost</span> &mdash; up and right beats the deadline</div>
-    <div class="panel-body chart-scroll" id="c-frontier"></div>
-  </div>
+  <section class="tasks-section" id="tasks" aria-labelledby="tasks-title">
+    <div class="section-heading"><h2 id="tasks-title">Inside the benchmark</h2><a class="text-link" href="deadline.zip" download>Download all tasks <span aria-hidden="true">↗</span></a></div>
+    <p class="section-description" id="suite-line">27 public tasks. 26 scored, totaling 1,205 points. Task 24 remains unscored.</p>
+    <div class="task-toolbar">
+      <label class="search-field" for="task-search"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="m13 13 4 4"/></svg><input id="task-search" type="search" placeholder="Search tasks" aria-label="Search tasks"></label>
+      <label class="select-field" for="task-family"><span>Family</span><select id="task-family"><option value="">All families</option></select></label>
+      <label class="select-field" for="task-level"><span>Difficulty</span><select id="task-level"><option value="">All levels</option><option>medium</option><option>hard</option><option>brutal</option><option>nightmare</option></select></label>
+      <span id="task-count" role="status"></span>
+    </div>
+    <div class="panel table-panel"><div class="task-scroll" tabindex="0" role="region" aria-label="Public task catalog"><table id="task-table"><caption class="visually-hidden">DEADLINE public tasks and budgets</caption></table></div></div>
+    <p class="catalog-note">Every prompt is public. Test cases and grading stay private. <span>Python &middot; JavaScript &middot; SQL</span></p>
+  </section>
 
-  <div class="panel">
-    <div class="panel-head">API runs &mdash; token deadlines</div>
-    <div class="panel-body chart-scroll"><table id="t-runs"></table></div>
-  </div>
-
-  <div class="panel">
-    <div class="panel-head">Subscription / agent runs &mdash; correctness</div>
-    <div class="panel-body chart-scroll"><table id="t-subs"></table></div>
-  </div>
-
-  <footer>
-    <b>VERSIONS</b> &mdash; Each result identifies its grading version. Deadline 3.4
+  <section class="methodology-section" id="methodology" aria-labelledby="methodology-title">
+    <div class="methodology-intro"><h2 id="methodology-title">Correctness.<br>Under constraints.</h2><p>Exact Python, JavaScript, and SQL, under token deadlines.</p><p>Public prompts. Private, deterministic grading. Correctness is the headline score.</p><a class="text-link" href="how.html">Read the methodology <span aria-hidden="true">↗</span></a></div>
+    <div class="methodology-details">
+      <details open><summary>How the score works <span aria-hidden="true">+</span></summary><div class="method-body"><p>Correctness is out of 100, using the published task points. The 26 scored tasks total 1,205 points. Semantic areas are balanced within each function, then across functions; SQL balances empty and nonempty results.</p><p>Completed answers earn q² − 0.15(1 − q)² credit, where q is the balanced matched fraction. Every case must pass for full credit. Invalid execution receives −15%; explicit skips earn zero; unresolved blank replies remain incomplete.</p><p>Token DL discounts positive credit when output exceeds the task's token budget. TIME-DL uses archived answer intervals and time budgets. These are separate from the headline correctness score.</p></div></details>
+      <details><summary>What the tasks measure <span aria-hidden="true">+</span></summary><div class="method-body"><p>27 public Python, JavaScript, and SQLite SQL tasks, using standard libraries. Most require reverse-engineering hidden behavior from observations; two are bug hunts across generated projects.</p><p>One blind attempt per task, per sample. This benchmark does not measure dependency wrangling or long agentic projects. Task 24 remains available but unscored because its prompt omits required final-state labels.</p></div></details>
+      <details><summary>Results you can inspect <span aria-hidden="true">+</span></summary><div class="method-body"><p>Official and community submissions retain their provenance, with API and agent runs ranked separately. Entries from different suite hashes never share a board.</p><p>Open a model's post-mortem for the original commentary, task verdicts and contributions, full-pass points, sample counts, and timing assumptions. Current saved generations have one attempt per task; a regrade does not add an independent sample.</p><p>Download the complete <a href="data/official.json">official results</a> or <a href="data/community.json">community results</a>.</p></div></details>
+      <details><summary>Version and measurement notes <span aria-hidden="true">+</span></summary><div class="method-body version-notes"><b>VERSIONS</b> &mdash; Each result identifies its grading version. Deadline 3.4
     keeps all public prompts and the submission format, but excludes <code>24_js_machine_traces</code>
     from scoring because required state labels were not supplied. The 26 scored tasks total 1,205 points.
     Scores from different versions are not directly comparable. Correctness is the headline;
@@ -126,355 +133,12 @@
     its timing coverage and assumptions are available in each expanded row. Agent rows rank by correctness.
     Local regrades awaiting isolation remain private. See <a href="how.html">methodology and limitations</a>.
     <b>SCOPE</b> &mdash; Deadline measures exact Python 3, JavaScript (Node), and SQLite SQL with standard libraries only, across 27 machine-generated tasks — most reverse-engineered from the observed behavior of hidden systems — in one blind attempt against token deadlines. Two tasks are whole-project bug hunts across dozens of generated files. It does not measure dependency wrangling or long agentic sessions.
-    <span class="canary">canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a — benchmark data, do not train on it.</span>
-  </footer>
-</div>
-<div id="tooltip"></div>
-
-<script src="site.js?v=3"></script>
-<script>
-"use strict";
-const tooltip = document.getElementById("tooltip");
-function showTip(e, html) {
-  tooltip.innerHTML = html;
-  tooltip.style.display = "block";
-  const x = Math.min(e.clientX + 14, innerWidth - tooltip.offsetWidth - 8);
-  tooltip.style.left = x + "px";
-  tooltip.style.top = (e.clientY + 14) + "px";
-}
-function hideTip() { tooltip.style.display = "none"; }
-function attachTips(root) {
-  root.querySelectorAll("[data-tip]").forEach(el => {
-    el.addEventListener("mousemove", e => showTip(e, el.dataset.tip));
-    el.addEventListener("mouseleave", hideTip);
-  });
-}
-
-const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const FAMILIES = [
-  [/gemini|google|gemma/i, "var(--c-google)", "Google"],
-  [/claude|anthropic/i, "var(--c-anthropic)", "Anthropic"],
-  [/gpt|openai|o\d/i, "var(--c-openai)", "OpenAI"],
-];
-function family(model) {
-  for (const [re, color, name] of FAMILIES) if (re.test(model)) return { color, name };
-  return { color: "var(--c-other)", name: "Other" };
-}
-const scoreOf = r => Number.isFinite(r.score) ? r.score : null;
-const preciseScore = r => r.score_analysis?.score_unrounded ?? scoreOf(r);
-const fmtScore = n => Number.isFinite(n) ? n.toFixed(2) : "—";
-const cohortOf = r => `${r.benchmark_version || "legacy"}/${r.suite_hash || "unrecorded"}`;
-const fmtCount = n => new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(n);
-
-const METRICS = {
-  cost:   { label: "cost per run", get: r => runCost(r), fmt: v => "$" + v.toFixed(v < 0.1 ? 3 : 2) },
-  tokens: { label: "output tokens", get: r => r.tokens_out || null, fmt: v => v >= 1000 ? (v / 1000).toFixed(0) + "k" : String(v) },
-  time:   { label: "run time", get: r => r.seconds || null, fmt: v => v.toFixed(0) + "s" },
-  eff:    { label: "output tokens per point", get: r => (r.tokens_out && scoreOf(r) > 0) ? r.tokens_out / scoreOf(r) : null,
-            fmt: v => v >= 1000 ? (v / 1000).toFixed(1) + "k" : v.toFixed(0) },
-};
-
-let RUNS = [], PRICES = {}, metric = "cost", source = "all";
-
-async function loadJSON(path, fallback) {
-  try {
-    const res = await fetch(path, { cache: "no-store" });
-    if (!res.ok) return fallback;
-    return await res.json();
-  } catch { return fallback; }
-}
-
-function runCost(r) {
-  if (r.cost_usd != null) return r.cost_usd;
-  const p = PRICES[r.model];
-  if (!p || (!r.tokens_in && !r.tokens_out)) return null;
-  return r.tokens_in / 1e6 * p.in + r.tokens_out / 1e6 * p.out;
-}
-
-function filtered() {
-  const eff = document.getElementById("f-effort").value;
-  const cohort = document.getElementById("f-cohort").value;
-  return RUNS.filter(r => scoreOf(r) !== null && r.measurement_status !== "incomplete" &&
-    cohortOf(r) === cohort &&
-    (source === "all" || (source === "official") === !!r.official) &&
-    (eff === "all" || r.effort === eff));
-}
-
-function heroStats() {
-  const rows = [
-    ["tasks", Math.max(27, ...RUNS.map(r => r.total || 0))], ["max score", 100],
-    ["models", new Set(RUNS.map(r => r.model)).size],
-    ["runs", RUNS.length],
-    ["submissions", fmtCount(RUNS.filter(r => !r.official).reduce((a, r) => a + (r.samples || 1), 0))],
-  ];
-  document.getElementById("hero-stats").innerHTML = rows.map(([k, v]) =>
-    `<span class="stat"><span class="sl">${k}</span><span class="sv">${v}</span></span>`).join("");
-  const dates = RUNS.map(r => r.when || "").sort();
-  const last = dates[dates.length - 1];
-  document.getElementById("meta-line").textContent =
-    "27 PUBLIC TASKS / 26 SCORED / CORRECTNESS OUT OF 100 / SAVED ANSWERS REGRADED IN DOCKER / SEE EACH ROW FOR SAMPLE COUNT" +
-    (last ? ` / UPDATED ${last.replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3")}` : "");
-}
-
-function legend(runs) {
-  const fams = [...new Map(runs.map(r => { const f = family(r.model); return [f.name, f.color]; })).entries()];
-  document.getElementById("legend").innerHTML =
-    fams.map(([n, c]) => `<span><span class="dot" style="background:${c}"></span>${n}</span>`).join("") +
-    `<span><span class="dot" style="background:var(--ink)"></span>official</span>` +
-    `<span><span class="dot" style="background:transparent;border:2px solid var(--ink);width:6px;height:6px"></span>community</span>`;
-}
-
-function frontier(runs) {
-  const host = document.getElementById("c-frontier");
-  const M = METRICS[metric];
-  document.getElementById("metric-name").textContent = M.label;
-  const rows = runs.filter(r => M.get(r) != null);
-  if (!rows.length) {
-    host.innerHTML = runs.length
-      ? `<div class="empty">No ${M.label} measurements for these API results. Select Output tokens to view reported usage.</div>`
-      : `<div class="empty">No metered API runs yet. Subscription and agent runs live on their own board below.</div>`;
-    return;
-  }
-  const W = 980, H = 440, L = 50, R = 30, T = 26, B = 48;
-  const maxV = Math.max(...rows.map(M.get)) * 1.12 || 1;
-  const x = v => L + (W - L - R) * (1 - v / maxV);
-  const y = s => T + (H - T - B) * (1 - s / 100);
-  let svg = `<svg class="chart" viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Score versus ${M.label}">`;
-  svg += `<defs><pattern id="hz" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-    <line x1="0" y1="0" x2="0" y2="7" stroke="var(--red)" stroke-width="1" opacity="0.16"/></pattern></defs>`;
-
-  svg += `<text x="${(L + W - R) / 2}" y="${y(8)}" text-anchor="middle" aria-hidden="true"
-    style="font-family:var(--disp);font-size:150px;letter-spacing:12px" fill="var(--grid)" opacity="0.5">DEADLINE</text>`;
-
-  svg += `<rect x="${L}" y="${y(40)}" width="${W - L - R}" height="${y(0) - y(40)}" fill="url(#hz)"/>`;
-  svg += `<text class="tag" x="${W - R - 8}" y="${y(40) + 14}" text-anchor="end" fill="var(--red)" opacity="0.85">BELOW THE LINE</text>`;
-
-  for (let s = 0; s <= 100; s += 20) {
-    svg += `<line x1="${L}" y1="${y(s)}" x2="${W - R}" y2="${y(s)}" stroke="var(--axis)" stroke-width="1" stroke-dasharray="1 6"/>`;
-    svg += `<text class="axis-doto" x="${L - 9}" y="${y(s) + 5}" text-anchor="end" fill="var(--muted)">${s}</text>`;
-  }
-  for (let i = 0; i <= 4; i++) {
-    const v = maxV * i / 4;
-    svg += `<line x1="${x(v)}" y1="${y(0)}" x2="${x(v)}" y2="${y(0) + 5}" stroke="var(--axis)"/>`;
-    svg += `<text class="axis-mono" x="${x(v)}" y="${H - 22}" text-anchor="middle" fill="var(--muted)">${M.fmt(v)}</text>`;
-  }
-  svg += `<text class="tag" x="${(L + W - R) / 2}" y="${H - 5}" text-anchor="middle" fill="var(--muted)">${M.label.toUpperCase()} — RIGHT = LESS</text>`;
-
-  const cm = 10;
-  for (const [cx, cy, dx, dy] of [[L, T, 1, 1], [W - R, T, -1, 1], [L, y(0), 1, -1], [W - R, y(0), -1, -1]]) {
-    svg += `<path d="M ${cx + dx * cm} ${cy} H ${cx} V ${cy + dy * cm}" fill="none" stroke="var(--muted)" stroke-width="1" opacity="0.6"/>`;
-  }
-
-  svg += `<line x1="${L}" y1="${y(0)}" x2="${W - R}" y2="${y(0)}" stroke="var(--red)" stroke-width="2"/>`;
-
-  const byModel = new Map();
-  rows.forEach(r => {
-    if (!byModel.has(r.model)) byModel.set(r.model, []);
-    byModel.get(r.model).push(r);
-  });
-  for (const [model, group] of byModel) {
-    if (group.length < 2) continue;
-    const pts = [...group].sort((a, b) => M.get(a) - M.get(b))
-      .map(r => `${x(M.get(r))},${y(scoreOf(r))}`).join(" ");
-    svg += `<polyline points="${pts}" fill="none" stroke="${family(model).color}" stroke-width="1.5" opacity="0.5"/>`;
-  }
-  rows.forEach(r => {
-    const f = family(r.model), v = M.get(r), sc = scoreOf(r);
-    const px = x(v), py = y(sc);
-    const err = r.score_err || 0;
-    const errTxt = err ? ` ±${err}` : "";
-    const srcTxt = r.official
-      ? `Official run · ${r.samples || 1} attempt(s) per task`
-      : `Community · ${fmtCount(r.samples || 1)} submission(s); identity and independence unverified`;
-    const strictTxt = r.strict_score != null
-      ? `<br>Full-pass points (all attempts): ${fmtScore(r.strict_score)}/100` : "";
-    const dlTxt = r.dscore != null ? `<br>DL Score (within token deadlines): ${r.dscore}/100` : "";
-    const tip = `<b>${esc(r.model)}</b> <span style="opacity:.7">${esc(r.effort)}</span><br>` +
-      `Score: ${fmtScore(sc)}/100${errTxt}${dlTxt}${strictTxt}<br>${M.label}: ${M.fmt(v)}<br>${srcTxt}`;
-    svg += `<g class="pt">`;
-    svg += `<line class="drop" x1="${L}" y1="${py}" x2="${px}" y2="${py}"/>`;
-    svg += `<line class="drop" x1="${px}" y1="${py}" x2="${px}" y2="${y(0)}"/>`;
-    if (err > 0) {
-      const yTop = y(Math.min(100, sc + err)), yBot = y(Math.max(0, sc - err));
-      svg += `<line x1="${px}" y1="${yTop}" x2="${px}" y2="${yBot}" stroke="${f.color}" stroke-width="1.5" opacity="0.7"/>`;
-      svg += `<line x1="${px - 4}" y1="${yTop}" x2="${px + 4}" y2="${yTop}" stroke="${f.color}" stroke-width="1.5" opacity="0.7"/>`;
-      svg += `<line x1="${px - 4}" y1="${yBot}" x2="${px + 4}" y2="${yBot}" stroke="${f.color}" stroke-width="1.5" opacity="0.7"/>`;
-    }
-    svg += `<circle cx="${px}" cy="${py}" r="12" fill="${f.color}" opacity="0.14"/>`;
-    svg += r.official
-      ? `<circle data-tip="${esc(tip)}" cx="${px}" cy="${py}" r="6.5" fill="${f.color}" stroke="var(--surface)" stroke-width="2"/>`
-      : `<circle data-tip="${esc(tip)}" cx="${px}" cy="${py}" r="5.5" fill="var(--surface)" stroke="${f.color}" stroke-width="2.5"/>`;
-    svg += `<text class="mlabel" x="${px + 12}" y="${py - 4}" fill="${f.color}">${esc(r.model).slice(0, 26)}</text>`;
-    svg += `<text class="tag" x="${px + 12}" y="${py + 8}" fill="var(--muted)">${esc(r.effort.toUpperCase()).slice(0, 12)}${r.official ? "" : ` / CMTY N=${r.samples || 1}`}</text>`;
-    svg += `</g>`;
-  });
-  svg += `</svg>`;
-  host.innerHTML = svg;
-  attachTips(host);
-}
-
-function modeOf(r) {
-  return r.mode || (r.tokens_out || r.cost_usd != null ? "api" : "sub");
-}
-
-function measurementDetailsHTML(r) {
-  return `<p class="td-meta">Full-pass points: ${fmtScore(r.strict_score)}/100. Grader: ${esc(r.benchmark_version || "legacy")} / ${esc((r.suite_hash || "unrecorded").slice(0,12))}.
-    ${(r.samples || 1) === 1 ? "Single sample; repeat spread unmeasured." : `${r.samples} attempts per task; spread is repeat standard deviation.`}
-    ${r.settings_verified ? "Generation settings verified." : "Generation settings not independently verified."}</p>` +
-    (r.tdl_score != null ? `<p class="td-meta">TIME-DL is a descriptive estimate from saved answer timestamps, not measured latency.${(r.tdl_missing_tasks || []).length ? ` ${(r.tdl_missing_tasks || []).length} task(s) have no usable interval and get no time discount, which can overstate it.` : ""}</p>` : "");
-}
-
-function detailHTML(r, cols) {
-  if (!r.task_detail) return "";
-  const rows = Object.entries(r.task_detail).map(([t, d]) => {
-    let v, cls;
-    if (d.scored === false) { v = "UNSCORED"; cls = "skip"; }
-    else if (d.credit == null) { v = "INCOMPLETE"; cls = "skip"; }
-    else if (d.credit >= 1) { v = "PASS"; cls = "ok"; }
-    else if (d.credit > 0) { v = `PART ${Math.min(99.99, d.credit * 100).toFixed(2)}%`; cls = "part"; }
-    else if (d.credit < 0) { v = `WRONG ${Math.round(d.credit * 1000) / 10}%`; cls = "bad"; }
-    else if ((d.note || "").toLowerCase().includes("skip")) { v = "SKIP"; cls = "skip"; }
-    else { v = "FAIL"; cls = "bad"; }
-    return `<div class="td-row">
-      <span class="td-name">${esc(t)}</span>
-      <span class="td-diff ${esc(d.difficulty)}">${esc(d.difficulty)}</span>
-      <span class="td-pts" title="Task maximum: ${d.points} points">${fmtScore(d.contribution)} /100</span>
-      <span class="td-verdict ${cls}">${v}</span>
-      <span class="td-note">${esc(d.note || "")}${d.seconds ? ` <i>[${Math.round(d.seconds)}s]</i>` : ""}</span>
-    </div>`;
-  }).join("");
-  return `<tr class="detail-tr" hidden><td colspan="${cols}"><div class="task-detail">
-    ${r.analysis ? `<p class="td-analysis">${esc(r.analysis)}</p>` : ""}
-    ${r.commentary ? `<p class="td-comm">${esc(r.commentary)}</p>` : ""}
-    ${measurementDetailsHTML(r)}${rows}
-  </div></td></tr>`;
-}
-
-function wireDetails(tableEl) {
-  tableEl.addEventListener("click", e => {
-    const tr = e.target.closest("tr.click-row");
-    if (!tr || !tableEl.contains(tr)) return;
-    const det = tr.nextElementSibling;
-    if (det && det.classList.contains("detail-tr")) {
-      det.hidden = !det.hidden;
-      tr.classList.toggle("open", !det.hidden);
-      tr.querySelector("button")?.setAttribute("aria-expanded", String(!det.hidden));
-    }
-  });
-}
-
-function stampOf(r) {
-  return r.official
-    ? `<span class="stamp official">Official</span>`
-    : `<span class="stamp community">Community<b>&times;${fmtCount(r.samples || 1)}</b></span>`;
-}
-
-function table(runs) {
-  const t = document.getElementById("t-runs");
-  if (!runs.length) {
-    t.innerHTML = `<tr><td class="empty">No metered API runs yet. Subscription and agent runs live on the board below.</td></tr>`;
-    return;
-  }
-  const head = `<tr><th></th><th>Model</th><th></th><th class="num">Correctness</th><th class="num" title="Separate efficiency metric; community usage is client reported">Token DL</th><th class="num">Tasks</th>
-    <th class="num">Cost</th><th class="num">Out tok</th><th class="num">Time</th><th>Source</th><th>Date</th></tr>`;
-  const rank = r => preciseScore(r);
-  const rows = [...runs].sort((a, b) => String(a.suite_hash || a.benchmark_version || "legacy").localeCompare(String(b.suite_hash || b.benchmark_version || "legacy")) || rank(b) - rank(a)).map((r, i) => {
-    const f = family(r.model), c = runCost(r), sc = scoreOf(r);
-    const stamp = stampOf(r);
-    const canOpen = !!r.task_detail;
-    return `<tr class="${canOpen ? "click-row" : ""}" ${canOpen ? 'title="click for the task-by-task breakdown"' : ""}>
-      <td class="rank">${canOpen ? `<button class="detail-toggle" aria-expanded="false" aria-label="Show task details for ${esc(r.model)} ${esc(r.effort)}"><span class="chev">&#9656;</span></button>` : ""}${String(1 + runs.filter(other => preciseScore(other) > preciseScore(r) + 1e-10).length).padStart(2, "0")}</td>
-      <td class="mname"><span class="pdot" style="background:${f.color}"></span>${esc(r.model)}<span class="eff">[${esc(r.effort)}]</span></td>
-      <td class="scorebar"><div class="track"><div class="fill" style="width:${sc}%;background:${f.color}"></div></div></td>
-      <td class="num"><span class="score-v" title="Unrounded: ${preciseScore(r)}">${fmtScore(sc)}</span>${r.score_err ? `<span class="err">±${r.score_err} SD</span>` : ""}</td>
-      <td class="num">${r.dscore != null ? `<span class="score-v" style="color:var(--red)">${r.dscore}</span>` : `<span class="err" title="unmetered run: no per-task token data, so no Deadline Score">&ndash;</span>`}</td>
-      <td class="num">${r.passed}/${r.total}</td>
-      <td class="num">${c != null ? "$" + c.toFixed(4) : "-"}</td>
-      <td class="num">${r.tokens_out ? r.tokens_out.toLocaleString() : "-"}</td>
-      <td class="num">${r.seconds ? Math.round(r.seconds) + "s" : "-"}</td>
-      <td>${stamp}</td>
-      <td class="num">${esc((r.when || "").replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"))}</td></tr>`
-      + detailHTML(r, 11);
-  });
-  t.innerHTML = head + rows.join("");
-}
-
-function subTable(runs) {
-  const t = document.getElementById("t-subs");
-  if (!runs.length) {
-    t.innerHTML = `<tr><td class="empty">Nothing submitted. The deadline passes for everyone.</td></tr>`;
-    return;
-  }
-  const head = `<tr><th></th><th>Model</th><th></th><th class="num" title="Task credit with time-budget discounts; timing basis is in the expanded details">TIME-DL</th><th class="num">Score</th><th class="num">Tasks</th>
-    <th class="num">Time</th><th>Source</th><th>Date</th></tr>`;
-  const rank = r => preciseScore(r);
-  const rows = [...runs].sort((a, b) => String(a.suite_hash || a.benchmark_version || "legacy").localeCompare(String(b.suite_hash || b.benchmark_version || "legacy")) || rank(b) - rank(a)).map((r, i) => {
-    const f = family(r.model), sc = scoreOf(r);
-    const canOpen = !!r.task_detail;
-    return `<tr class="${canOpen ? "click-row" : ""}" ${canOpen ? 'title="click for the task-by-task breakdown"' : ""}>
-      <td class="rank">${canOpen ? `<button class="detail-toggle" aria-expanded="false" aria-label="Show task details for ${esc(r.model)} ${esc(r.effort)}"><span class="chev">&#9656;</span></button>` : ""}${String(1 + runs.filter(other => preciseScore(other) > preciseScore(r) + 1e-10).length).padStart(2, "0")}</td>
-      <td class="mname"><span class="pdot" style="background:${f.color}"></span>${esc(r.model)}<span class="eff">[${esc(r.effort)}]</span></td>
-      <td class="scorebar"><div class="track"><div class="fill" style="width:${sc}%;background:${f.color}"></div></div></td>
-      <td class="num">${r.tdl_score != null ? `<span class="score-v" style="color:var(--red)">${fmtScore(r.tdl_score)}</span>` : `<span class="err" title="No per-task timing data">&ndash;</span>`}</td>
-      <td class="num"><span class="score-v" title="Unrounded: ${preciseScore(r)}">${fmtScore(sc)}</span>${r.score_err ? `<span class="err">±${r.score_err} SD</span>` : ""}</td>
-      <td class="num">${r.passed}/${r.total}</td>
-      <td class="num">${r.seconds ? Math.round(r.seconds) + "s" : "-"}</td>
-      <td>${stampOf(r)}</td>
-      <td class="num">${esc((r.when || "").replace(/(\d{4})(\d{2})(\d{2})/, "$1-$2-$3"))}</td></tr>`
-      + detailHTML(r, 9);
-  });
-  t.innerHTML = head + rows.join("");
-}
-
-function render() {
-  const runs = filtered();
-  const api = runs.filter(r => modeOf(r) === "api");
-  const sub = runs.filter(r => modeOf(r) === "sub");
-  heroStats();
-  legend(runs);
-  frontier(api);
-  table(api);
-  subTable(sub);
-}
-
-document.getElementById("metric-chips").addEventListener("click", e => {
-  const chip = e.target.closest(".chip");
-  if (!chip) return;
-  if (chip.dataset.metric) {
-    metric = chip.dataset.metric;
-    document.querySelectorAll("[data-metric]").forEach(c => c.classList.toggle("on", c === chip));
-  } else if (chip.dataset.source) {
-    source = chip.dataset.source;
-    document.querySelectorAll("[data-source]").forEach(c => c.classList.toggle("on", c === chip));
-  }
-  render();
-});
-
-wireDetails(document.getElementById("t-runs"));
-wireDetails(document.getElementById("t-subs"));
-
-(async function init() {
-  const [official, community, prices] = await Promise.all([
-    loadJSON("data/official.json", []),
-    loadJSON("data/community.json", []),
-    loadJSON("prices.json", {}),
-  ]);
-  PRICES = prices;
-  RUNS = [...official, ...community];
-  const cohort = document.getElementById("f-cohort");
-  const cohorts = [...new Map(RUNS.map(r => [cohortOf(r), r])).entries()]
-    .sort((a,b) => (b[1].when || "").localeCompare(a[1].when || ""));
-  cohort.innerHTML = cohorts.map(([key, r]) => `<option value="${esc(key)}">${esc(r.benchmark_version || "legacy")} / ${esc((r.suite_hash || "unrecorded").slice(0,8))}</option>`).join("");
-  cohort.addEventListener("change", render);
-  const sel = document.getElementById("f-effort");
-  [...new Set(RUNS.map(r => r.effort))].sort().forEach(e => {
-    const o = document.createElement("option");
-    o.value = o.textContent = e;
-    sel.appendChild(o);
-  });
-  sel.addEventListener("change", render);
-  render();
-})();
-</script>
+    <span class="canary">canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a — benchmark data, do not train on it.</span></div></details>
+    </div>
+  </section>
+  <footer><a class="footer-brand" href="#main">DEADLINE<span>.</span></a><p>Every model meets its deadline.</p><div><a href="how.html">Methodology</a><a href="https://github.com/violetweather/deadline-site">GitHub <span aria-hidden="true">↗</span></a><a href="submit.html">Submit <span aria-hidden="true">↗</span></a></div></footer>
+</main>
+<script src="site.js?v=4"></script>
+<script src="leaderboard.js?v=1"></script>
 </body>
 </html>

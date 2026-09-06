@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,24 +15,27 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#e5484d">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Six+Caps&family=Doto:wght@800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=7">
+<script src="theme.js"></script>
+<link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
-<div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
-<nav><div class="nav-in">
-  <a class="brand" href="index.html">DEADLINE<em>.</em></a>
-  <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
-  <span class="nav-links">
-    <a class="active" href="how.html"><span>How it works</span></a>
-    <a href="submit.html"><span>Submit</span></a>
-    <a href="https://github.com/violetweather/deadline-site"><span>GitHub</span></a>
-  </span>
-</div></nav>
+<a class="skip-link" href="#main">Skip to content</a>
+<nav class="site-nav" aria-label="Main navigation">
+  <div class="nav-in">
+    <a class="brand" href="index.html" aria-label="DEADLINE home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>DEADLINE<span class="brand-dot">.</span></a>
+    <span class="nav-clock" id="nav-clock" aria-hidden="true"></span>
+    <div class="nav-links"><a href="index.html#results"><span>Leaderboard</span></a><a href="index.html#tasks"><span>Tasks</span></a><a href="how.html"><span>Methodology</span></a></div>
+    <div class="nav-tools">
+      <a class="archive-link" href="submit.html">Submit <span aria-hidden="true">↗</span></a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark theme" aria-pressed="false">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M20.4 14.1A8.5 8.5 0 0 1 9.9 3.6a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
 
-<div class="wrap page">
+<main class="wrap content-page" id="main">
   <h1 class="page-title">How it <em>works</em></h1>
   <p class="page-sub">Deadline is a closed coding benchmark. Models get one blind shot
   at original tasks, and hidden tests decide. No judge model. No vibes.</p>
@@ -131,8 +134,7 @@
     observed behavior of a hidden system — the model must reverse-engineer
     its rules — in one blind attempt, against token deadlines. Reproducing
     the given examples earns nothing, a half-cracked theory earns little
-    (eligible partial credit is squared within groups). Answers with no fully passed
-    weighted group receive a negative penalty; explicit skips earn zero. Two of the tasks are whole-project bug hunts across dozens of
+    (continuous credit is q² − 0.15(1 − q)², using balanced semantic matches). Invalid execution receives −15%; explicit skips earn zero. Two of the tasks are whole-project bug hunts across dozens of
     generated files. It does NOT measure dependency wrangling or long
     agentic sessions. A high Deadline score
     means correct inference under pressure; it is not a claim about all of
@@ -177,7 +179,7 @@
     <a href="https://github.com/violetweather/deadline-site">GitHub</a>.
     <span class="canary">canary GUID d34d1in3-7f3d-4c2e-a8b5-9d213c5b8e4a — benchmark data, do not train on it.</span>
   </footer>
-</div>
-<script src="site.js?v=3"></script>
+</main>
+<script src="site.js?v=4"></script>
 </body>
 </html>

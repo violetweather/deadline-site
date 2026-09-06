@@ -5,7 +5,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+const script = fs.readFileSync(path.join(root, 'leaderboard.js'), 'utf8');
 
 class Element {
   constructor(id) { this.id = id; this.value = id === 'f-effort' ? 'all' : ''; this.listeners = {}; }
@@ -30,10 +30,55 @@ class Element {
     fetch: async file => ({ ok: true, json: async () => JSON.parse(fs.readFileSync(path.join(root, file), 'utf8')) }),
     Intl, console,
   });
-  await vm.runInContext(script, context);
+  vm.runInContext(script, context);
+  await vm.runInContext("ready", context);
   const evaluate = code => vm.runInContext(code, context);
+  const sourceResults = ['official', 'community'].flatMap(name =>
+    JSON.parse(fs.readFileSync(path.join(root, `data/${name}.json`), 'utf8')));
+  assert.equal(evaluate('JSON.stringify(results)'), JSON.stringify(sourceResults), 'load saved results without rewriting or regrading');
+  assert.equal(evaluate('displayed().length'), 8, 'include all seven historical official results and the community result');
+  assert.equal(evaluate('manifest.tasks.length'), 27);
+  assert.equal(evaluate('manifest.tasks.filter(t => t.scored !== false).length'), 26);
+  assert.equal(evaluate('manifest.tasks.reduce((sum, t) => sum + t.points, 0)'), 1205);
+  assert.ok(elements.get('suite-line').textContent.startsWith('9 families.'));
+  assert.ok(elements.get('task-table').innerHTML.includes('UNSCORED'));
+  assert.ok(!elements.get('hardest').innerHTML.includes('24_js_machine_traces'), 'unscored task is not a hardest-task failure');
+  for (const r of sourceResults) {
+    context.savedResult = r;
+    const detail = evaluate('detailHTML(savedResult, 11)');
+    assert.ok(detail.includes(evaluate('esc(savedResult.analysis)')));
+    assert.ok(detail.includes(evaluate('esc(savedResult.commentary)')));
+    assert.equal((detail.match(/class="td-row"/g) || []).length, 27);
+    assert.equal((detail.match(/>UNSCORED</g) || []).length, 1);
+    for (const [id, task] of Object.entries(r.task_detail)) {
+      assert.ok(detail.includes(id));
+      assert.ok(detail.includes(`${task.contribution.toFixed(2)} /100`));
+    }
+  }
+  assert.equal(evaluate('METRICS.tokens.get(results.find(r => r.mode === "sub"))'), null, 'unmetered zero placeholders must not appear as measured zero usage');
+  assert.equal(evaluate('providerOf("deepseek-v4-flash-0731").logo'), 'deepseek');
+  assert.equal(evaluate('providerOf("gpt-5.6-sol").logo'), 'openai');
+  assert.equal(evaluate('providerOf("claude-sonnet-5").logo'), 'anthropic');
+  for (const name of ['cost', 'tokens', 'seconds', 'tdl', 'eff']) {
+    context.chartMetric = name;
+    evaluate('metric = chartMetric; renderFrontier()');
+    assert.ok(elements.get('c-frontier').innerHTML.includes('<svg'));
+    assert.ok(!/NaN|Infinity/.test(elements.get('c-frontier').innerHTML));
+  }
+  evaluate('metric = "cost"; renderFrontier()');
+  elements.get('task-search').value = '24_js_machine';
+  evaluate('renderTasks()');
+  assert.equal(elements.get('task-count').textContent, '1 / 27 tasks');
+  assert.ok(elements.get('task-table').innerHTML.includes('UNSCORED'));
+  elements.get('task-search').value = '';
+  elements.get('task-level').value = 'nightmare';
+  evaluate('renderTasks()');
+  assert.ok(!elements.get('task-table').innerHTML.includes('01_cipher_d2'));
+  elements.get('task-level').value = '';
+  evaluate('renderTasks()');
+  assert.ok(!/Version 4|DEADLINE 4|deadline-v4|v4\//i.test(html + script));
   assert.ok(html.includes('<title>Deadline</title>'));
-  const community = evaluate('RUNS.find(r => r.model === "deepseek-v4-flash-0731")');
+  const community = evaluate('results.find(r => r.model === "deepseek-v4-flash-0731")');
   assert.ok(community && !community.official && community.verified);
   assert.equal(community.score, 65.36);
   assert.equal(community.dscore, 31.31);
@@ -41,44 +86,47 @@ class Element {
   assert.equal(community.seconds, 13362.43);
   assert.equal(community.cost_estimated, true);
   assert.equal(community.cost_estimate.model, community.model);
-  assert.equal(evaluate('runCost(RUNS.find(r => r.model === "deepseek-v4-flash-0731"))'), 1.40349924);
-  assert.ok(elements.get('t-runs').innerHTML.includes('$1.4035'));
-  assert.ok(elements.get('t-runs').innerHTML.includes('13362s'));
-  assert.ok(elements.get('t-runs').innerHTML.includes('deepseek-v4-flash-0731'));
-  assert.ok(elements.get('t-runs').innerHTML.includes('class="td-analysis"'));
-  assert.ok(elements.get('t-runs').innerHTML.includes('Community<b>&times;1'));
+  assert.equal(evaluate('runCost(results.find(r => r.model === "deepseek-v4-flash-0731"))'), 1.40349924);
+  assert.ok(elements.get('leaderboard').innerHTML.includes('$1.4035'));
+  assert.ok(elements.get('leaderboard').innerHTML.includes('13362s'));
+  assert.ok(elements.get('leaderboard').innerHTML.includes('deepseek-v4-flash-0731'));
+  assert.ok(elements.get('leaderboard').innerHTML.includes('class="td-analysis"'));
+  assert.ok(elements.get('leaderboard').innerHTML.includes('Community<b>&times;1'));
   assert.ok(elements.get('c-frontier').innerHTML.includes('<svg'));
   assert.ok(elements.get('c-frontier').innerHTML.includes('deepseek-v4-flash-0731'));
   assert.ok(!elements.get('c-frontier').innerHTML.includes('NaN'));
-  evaluate('metric = "tokens"; render()');
+  evaluate('metric = "tokens"; renderBoards()');
   assert.ok(elements.get('c-frontier').innerHTML.includes('<svg'));
   assert.ok(elements.get('c-frontier').innerHTML.includes('deepseek-v4-flash-0731'));
   assert.ok(!elements.get('c-frontier').innerHTML.includes('NaN'));
-  evaluate('source = "community"; render()');
-  assert.equal(evaluate('filtered().length'), 1);
-  evaluate('source = "all"; metric = "cost"; render()');
-  assert.ok(elements.get('t-subs').innerHTML.includes('settings not independently verified'));
+  evaluate('cohort = "community"; renderBoards()');
+  assert.equal(evaluate('displayed().length'), 1);
+  evaluate('cohort = "all"; metric = "cost"; renderBoards()');
+  assert.ok(elements.get('leaderboard').innerHTML.includes('settings not independently verified'));
   assert.equal(evaluate('stampOf({official:true})'), '<span class="stamp official">Official</span>');
-  assert.ok(elements.get('t-subs').innerHTML.includes('>TIME-DL</th>'));
-  assert.ok(!elements.get('t-subs').innerHTML.includes('Time-DL (unverified)'));
+  assert.ok(elements.get('leaderboard').innerHTML.includes('>TIME-DL</button>'));
+  assert.ok(!elements.get('leaderboard').innerHTML.includes('Time-DL (unverified)'));
   assert.ok(!html.includes('class="measurement-note"'));
-  assert.ok(elements.get('t-subs').innerHTML.includes('Full-pass points'));
-  const rendered = elements.get('t-subs').innerHTML;
+  assert.ok(elements.get('leaderboard').innerHTML.includes('Full-pass points'));
+  const rendered = elements.get('leaderboard').innerHTML;
   assert.ok(rendered.indexOf('class="td-analysis"') < rendered.indexOf('class="td-meta"'));
   assert.ok(rendered.includes('class="td-meta"'));
   assert.ok(!rendered.includes('score-summary'));
   assert.ok(!html.includes('Scores by task family'));
   assert.ok(!html.includes('Compare saved answers'));
-  assert.ok(!elements.get('t-subs').innerHTML.includes('NaN'));
-  assert.match(elements.get('t-subs').innerHTML, /class="score-v"[^>]*>\d+\.\d{2}</);
-  assert.ok(elements.get('t-subs').innerHTML.includes('aria-expanded="false"'));
-  const initialCount = evaluate('filtered().length');
+  assert.ok(!elements.get('leaderboard').innerHTML.includes('NaN'));
+  assert.match(elements.get('leaderboard').innerHTML, /class="score-v"[^>]*>\d+\.\d{2}</);
+  assert.ok(elements.get('leaderboard').innerHTML.includes('aria-expanded="false"'));
+  const initialCount = evaluate('displayed().length');
   assert.ok(initialCount > 1);
-  const mediumCount = evaluate('filtered().filter(r => r.effort === "medium").length');
-  evaluate('RUNS.push({...RUNS[0], id:"old", suite_hash:"older", score:100})');
-  assert.equal(evaluate('filtered().length'), initialCount, 'different suite hashes must not mix');
+  const mediumCount = evaluate('displayed().filter(r => r.effort === "medium").length');
+  evaluate('results.push({...results[0], id:"old", suite_hash:"older", score:100})');
+  assert.equal(evaluate('displayed().length'), initialCount, 'different suite hashes must not mix');
+  evaluate('results.push({...results[0], benchmark_version:"deadline-4", score:100}, {...results[0], measurement_status:"incomplete"}, {...results[0], pilot:true})');
+  assert.equal(evaluate('displayed().length'), initialCount, 'exclude other versions, incomplete answers and development pilots');
+  assert.ok(evaluate('compareEntries({score:50,score_analysis:{score_unrounded:50.004}}, {score:50,score_analysis:{score_unrounded:50.001}})') < 0, 'sort using unrounded scores');
   elements.get('f-effort').value = 'medium';
-  assert.equal(evaluate('filtered().length'), mediumCount);
+  assert.equal(evaluate('displayed().length'), mediumCount);
   elements.get('f-effort').value = 'all';
   assert.equal(evaluate('fmtScore(null)'), '\u2014');
   assert.equal(evaluate('fmtScore(86.2)'), '86.20');
