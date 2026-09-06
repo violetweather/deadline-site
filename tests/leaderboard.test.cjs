@@ -78,7 +78,7 @@ class Element {
   evaluate('renderTasks()');
   assert.ok(!/Version 4|DEADLINE 4|deadline-v4|v4\//i.test(html + script));
   assert.ok(html.includes('<title>Deadline</title>'));
-  const minimax = evaluate('results.find(r => r.model === "minimax/minimax-m3:free")');
+  const minimax = evaluate('results.find(r => r.model === "minimax-m3")');
   assert.ok(minimax && !minimax.official && minimax.verified);
   assert.equal(minimax.score, 38.44);
   assert.equal(minimax.dscore, 28.64);
@@ -90,8 +90,9 @@ class Element {
   assert.equal(minimax.tokens_in, 46181);
   assert.equal(minimax.tokens_out, 486006);
   assert.equal(minimax.cost_estimated, true);
-  assert.equal(minimax.cost_estimate.model, minimax.model);
-  assert.equal(evaluate('runCost(results.find(r => r.model === "minimax/minimax-m3:free"))'), 0);
+  assert.equal(minimax.cost_estimate.model, "minimax/minimax-m3:free");
+  assert.equal(minimax.published_source.requested_model, "minimax/minimax-m3:free");
+  assert.equal(evaluate('runCost(results.find(r => r.model === "minimax-m3"))'), 0);
   assert.equal(minimax.published_source.extraction_correction.policy, 'last-language-block-v1');
   assert.equal(minimax.published_source.extraction_correction.new_model_calls, 0);
   assert.equal(minimax.published_source.extraction_correction.existing_published_entries_changed, 0);
@@ -101,7 +102,7 @@ class Element {
   assert.ok(elements.get('leaderboard').innerHTML.includes('5274s'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('$0.0000'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('486,006'));
-  assert.ok(elements.get('c-frontier').innerHTML.includes('minimax/minimax-m3:free'));
+  assert.ok(elements.get('c-frontier').innerHTML.includes('minimax-m3'));
   const community = evaluate('results.find(r => r.model === "deepseek-v4-flash-0731")');
   assert.ok(community && !community.official && community.verified);
   assert.equal(community.score, 65.36);
@@ -110,8 +111,11 @@ class Element {
   assert.equal(community.seconds, 13362.43);
   assert.equal(community.cost_estimated, true);
   assert.equal(community.cost_estimate.model, community.model);
-  assert.equal(evaluate('runCost(results.find(r => r.model === "deepseek-v4-flash-0731"))'), 1.40349924);
-  assert.ok(elements.get('leaderboard').innerHTML.includes('$1.4035'));
+  assert.equal(community.cost_estimate.pricing_source, "https://openrouter.ai/deepseek/deepseek-v4-flash-0731");
+  assert.equal(community.cost_estimate.input_usd_per_million, 0.04998);
+  assert.equal(community.cost_estimate.output_usd_per_million, 0.09996);
+  assert.equal(evaluate('runCost(results.find(r => r.model === "deepseek-v4-flash-0731"))'), 0.1070306706);
+  assert.ok(elements.get('leaderboard').innerHTML.includes('$0.1070'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('13362s'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('deepseek-v4-flash-0731'));
   assert.ok(elements.get('leaderboard').innerHTML.includes('class="td-analysis"'));
